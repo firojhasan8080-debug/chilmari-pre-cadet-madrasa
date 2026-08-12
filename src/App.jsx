@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Footer from './components/Footer';
 
 export default function App() {
   const [formData, setFormData] = useState({ studentName: '', phone: '', class: '' });
@@ -225,19 +226,8 @@ export default function App() {
 
       </main>
 
-      {/* ফুটার */}
-      <footer id="contact" style={{ backgroundColor: '#0f172a', color: '#94a3b8', padding: '40px 20px 20px 20px', marginTop: '60px' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', textAlignment: 'center' }}>
-          <h4 style={{ color: 'white', margin: '0 0 8px 0', fontSize: '18px' }}>চিলমারী প্রি ক্যাডেট মাদ্রাসা</h4>
-          <p style={{ fontSize: '14px', margin: '0 0 12px 0' }}>ঠিকানা: চিলমারী, কুড়িগ্রাম</p>
-          <p style={{ fontSize: '14px', margin: '0 0 20px 0', color: '#38bdf8' }}>
-            মোবাইল: <a href="tel:+8801521553003" style={{ color: '#38bdf8', textDecoration: 'none', fontWeight: 'bold' }}>+880 1521-553003</a>
-          </p>
-          <p style={{ fontSize: '12px', borderTop: '1px solid #1e293b', paddingTop: '20px', margin: 0 }}>
-            © {new Date().getFullYear()} চিলমারী প্রি ক্যাডেট মাদ্রাসা। সর্বস্বত্ব সংরক্ষিত।
-          </p>
-        </div>
-      </footer>
+      {/* নতুন ফুটার লিঙ্ক করা হয়েছে */}
+      <Footer />
     </div>
   );
 }
