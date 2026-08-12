@@ -1,367 +1,21 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
+import Footer from './components/Footer';
 
-// ==========================================
-// ১. ইনলাইন মোডাল কম্পোনেন্ট (AdmissionModal)
-// ==========================================
-function AdmissionModal({ isOpen, onClose }) {
-  const [step, setStep] = useState(1);
-  const [phoneVerified, setPhoneVerified] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
-  const [otpCode, setOtpCode] = useState(['', '', '', '']);
-  const [generatedOtp, setGeneratedOtp] = useState('');
-  const [otpError, setOtpError] = useState('');
-
-  const [formData, setFormData] = useState({
-    studentName: '',
-    age: '',
-    gender: 'ছেলে',
-    class: '',
-    fatherName: '',
-    motherName: '',
-    phone: '',
-    division: 'রংপুর',
-    district: 'কুড়িগ্রাম',
-    thana: 'চিলমারী',
-    village: '',
-    studentPhoto: null,
-    parentPhoto: null,
-    nidFront: null,
-    nidBack: null,
-  });
-
-  const [activeCamera, setActiveCamera] = useState(null);
-  const videoRef = useRef(null);
-  const [stream, setStream] = useState(null);
-
-  if (!isOpen) return null;
-
-  const handleSendOtp = () => {
-    if (!formData.phone || formData.phone.length < 11) {
-      alert('অনুগ্রহ করে সঠিক ১১ ডিজিটের মোবাইল নম্বর দিন');
-      return;
-    }
-    const randomOtp = Math.floor(1000 + Math.random() * 9000).toString();
-    setGeneratedOtp(randomOtp);
-    setOtpSent(true);
-    setOtpError('');
-    alert(`[SMS ভেরিফিকেশন]: চিলমারী প্রি ক্যাডেট মাদ্রাসা ভর্তির ওটিপি কোড: ${randomOtp}`);
-  };
-
-  const handleVerifyOtp = () => {
-    const enteredOtp = otpCode.join('');
-    if (enteredOtp === generatedOtp) {
-      setPhoneVerified(true);
-      setOtpError('');
-      alert('✅ আপনার মোবাইল নম্বর সফলভাবে ভেরিফাই হয়েছে!');
-    } else {
-      setOtpError('❌ ভুল কোড! সঠিক ৪ ডিজিটের কোড দিন।');
-    }
-  };
-
-  const startCamera = async (type) => {
-    setActiveCamera(type);
-    try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-      setStream(mediaStream);
-      if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream;
-      }
-    } catch (err) {
-      alert('ক্যামেরা চালু করা সম্ভব হয়নি। ব্রাউজারের পারমিশন চেক করুন।');
-    }
-  };
-
-  const capturePhoto = (type) => {
-    const canvas = document.createElement('canvas');
-    if (videoRef.current) {
-      canvas.width = videoRef.current.videoWidth || 640;
-      canvas.height = videoRef.current.videoHeight || 480;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-      const imageData = canvas.toDataURL('image/jpeg');
-
-      if (type === 'nidFront' || type === 'nidBack') {
-        const confirmNid = window.confirm("NID কার্ড কি স্পষ্ট ও সঠিকভাবে ফ্রেমে এসেছে?");
-        if (!confirmNid) {
-          alert("অনুগ্রহ করে NID কার্ডটি সমতল জায়গায় রেখে পুনরায় স্পষ্ট ছবি তুলুন।");
-          return;
-        }
-      }
-
-      setFormData(prev => ({ ...prev, [type]: imageData }));
-      stopCamera();
-    }
-  };
-
-  const stopCamera = () => {
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-    }
-    setStream(null);
-    setActiveCamera(null);
-  };
+export default function App() {
+  const [formData, setFormData] = useState({ studentName: '', phone: '', class: '' });
+  const [submitted, setSubmitted] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!phoneVerified) {
-      alert('আবেদন জমা দেওয়ার পূর্বে ফোন নম্বর ভেরিফাই করা বাধ্যতামূলক!');
-      return;
-    }
-    if (!formData.studentPhoto || !formData.parentPhoto || !formData.nidFront || !formData.nidBack) {
-      alert('অনুগ্রহ করে সকল বাধ্যতামূলক ছবি ও NID ফ্রন্ট/ব্যাক লাইভ ক্যামেরা দিয়ে তুলুন!');
-      return;
-    }
-    alert('🎉 অভিনন্দন! আপনার ভর্তি আবেদন সফলভাবে জমা হয়েছে। মাদ্রাসা কর্তৃপক্ষ আপনার সাথে যোগাযোগ করবে।');
-    onClose();
+    setSubmitted(true);
   };
-
-  return (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.75)', backdropFilter: 'blur(6px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
-      <style>{`
-        .modal-card { background: #ffffff; width: 100%; max-width: 650px; max-height: 90vh; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow-y: auto; position: relative; padding: 28px; }
-        .step-pill { width: 32px; height: 32px; border-radius: 50%; display: flex; alignItems: center; justifyContent: center; font-weight: bold; font-size: 14px; }
-        .form-label { display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px; }
-        .form-label span { color: #ef4444; }
-        .form-input { width: 100%; padding: 11px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; }
-        .form-input:focus { border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15); }
-        .cam-box { border: 2px dashed #94a3b8; border-radius: 12px; padding: 16px; text-align: center; background: #f8fafc; margin-top: 6px; }
-      `}</style>
-
-      <div className="modal-card">
-        <button onClick={onClose} style={{ position: 'absolute', top: '20px', right: '20px', background: '#f1f5f9', border: 'none', width: '36px', height: '36px', borderRadius: '50%', fontSize: '18px', cursor: 'pointer', color: '#64748b' }}>✕</button>
-
-        <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-          <span style={{ backgroundColor: '#dcfce7', color: '#15803d', padding: '4px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold' }}>অনলাইন অ্যাডমিশন পোর্টাল</span>
-          <h2 style={{ fontSize: '22px', fontWeight: '800', color: '#14532d', margin: '8px 0 4px 0' }}>ভর্তি ফরম ২০২৬-২৭</h2>
-          <p style={{ fontSize: '13px', color: '#64748b', margin: 0 }}>সঠিক তথ্য প্রদান করে ডিজিটাল ফরমটি পূরণ করুন</p>
-        </div>
-
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', backgroundColor: '#f8fafc', padding: '12px 18px', borderRadius: '16px' }}>
-          {[1, 2, 3, 4].map((num) => (
-            <div key={num} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div className="step-pill" style={{ backgroundColor: step >= num ? '#16a34a' : '#e2e8f0', color: step >= num ? '#ffffff' : '#64748b' }}>{num}</div>
-              <span style={{ fontSize: '12px', fontWeight: '600', color: step >= num ? '#14532d' : '#94a3b8' }}>
-                {num === 1 ? 'শিক্ষার্থী' : num === 2 ? 'অভিভাবক ও OTP' : num === 3 ? 'ঠিকানা' : 'ডকুমেন্ট'}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        <form onSubmit={handleSubmit}>
-          {step === 1 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div>
-                <label className="form-label">শিক্ষার্থীর পূর্ণ নাম <span>*</span></label>
-                <input type="text" required placeholder="যেমন: আব্দুল্লাহ আল মামুন" className="form-input" value={formData.studentName} onChange={e => setFormData({ ...formData, studentName: e.target.value })} />
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                <div>
-                  <label className="form-label">বয়স <span>*</span></label>
-                  <input type="number" min="3" max="18" required placeholder="যেমন: ৫" className="form-input" value={formData.age} onChange={e => setFormData({ ...formData, age: e.target.value })} />
-                </div>
-                <div>
-                  <label className="form-label">লিঙ্গ <span>*</span></label>
-                  <select className="form-input" value={formData.gender} onChange={e => setFormData({ ...formData, gender: e.target.value })}>
-                    <option value="ছেলে">ছেলে</option>
-                    <option value="মেয়ে">মেয়ে</option>
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label className="form-label">শ্রেণি <span>*</span></label>
-                <select className="form-input" required value={formData.class} onChange={e => setFormData({ ...formData, class: e.target.value })}>
-                  <option value="">-- শ্রেণি নির্বাচন করুন --</option>
-                  <option value="প্লে">প্লে শ্রেণি</option>
-                  <option value="নার্সারি">নার্সারি</option>
-                  <option value="কেজি">কেজি (KG)</option>
-                  <option value="১ম">১ম শ্রেণি</option>
-                  <option value="২য়">২য় শ্রেণি</option>
-                  <option value="৩য়">৩য় শ্রেণি</option>
-                  <option value="৪র্থ">৪র্থ শ্রেণি</option>
-                  <option value="৫ম">৫ম শ্রেণি</option>
-                  <option value="হিফজ">নাজেরা ও হিফজ বিভাগ</option>
-                </select>
-              </div>
-              <button type="button" onClick={() => { if(formData.studentName && formData.age && formData.class) setStep(2); else alert('সকল ঘর পূরণ করুন'); }} style={{ width: '100%', padding: '12px', backgroundColor: '#16a34a', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer' }}>
-                পরবর্তী ধাপ ➔
-              </button>
-            </div>
-          )}
-
-          {step === 2 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div>
-                <label className="form-label">পিতার নাম <span>*</span></label>
-                <input type="text" required placeholder="পিতার নাম" className="form-input" value={formData.fatherName} onChange={e => setFormData({ ...formData, fatherName: e.target.value })} />
-              </div>
-              <div>
-                <label className="form-label">মাতার নাম <span>*</span></label>
-                <input type="text" required placeholder="মাতার নাম" className="form-input" value={formData.motherName} onChange={e => setFormData({ ...formData, motherName: e.target.value })} />
-              </div>
-              <div style={{ backgroundColor: '#f0fdf4', padding: '16px', borderRadius: '12px', border: '1px solid #bbf7d0' }}>
-                <label className="form-label">অভিভাবকের মোবাইল নম্বর <span>*</span></label>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <input type="tel" disabled={phoneVerified} placeholder="017XXXXXXXX" className="form-input" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} />
-                  {!phoneVerified && (
-                    <button type="button" onClick={handleSendOtp} style={{ backgroundColor: '#0284c7', color: 'white', border: 'none', padding: '0 16px', borderRadius: '10px', fontWeight: 'bold', fontSize: '13px', cursor: 'pointer' }}>
-                      {otpSent ? 'পুনরায় পাঠান' : 'ওটিপি পাঠান'}
-                    </button>
-                  )}
-                </div>
-                {phoneVerified && <div style={{ color: '#16a34a', fontWeight: 'bold', fontSize: '13px', marginTop: '8px' }}>✅ নম্বরটি ভেরিফাই হয়েছে!</div>}
-                {otpSent && !phoneVerified && (
-                  <div style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1px dashed #abd6bc' }}>
-                    <p style={{ fontSize: '12px', color: '#15803d', margin: '0 0 8px 0', fontWeight: '600' }}>৪ ডিজিটের কোড দিন:</p>
-                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                      {[0, 1, 2, 3].map((idx) => (
-                        <input
-                          key={idx}
-                          id={`otp-${idx}`}
-                          type="text"
-                          maxLength="1"
-                          style={{ width: '45px', height: '45px', textAlign: 'center', fontSize: '18px', fontWeight: 'bold', border: '2px solid #16a34a', borderRadius: '8px' }}
-                          value={otpCode[idx]}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            const newOtp = [...otpCode];
-                            newOtp[idx] = val;
-                            setOtpCode(newOtp);
-                            if (val && idx < 3) document.getElementById(`otp-${idx + 1}`).focus();
-                          }}
-                        />
-                      ))}
-                    </div>
-                    {otpError && <p style={{ color: '#dc2626', fontSize: '12px', textAlign: 'center', margin: '6px 0 0 0' }}>{otpError}</p>}
-                    <button type="button" onClick={handleVerifyOtp} style={{ width: '100%', marginTop: '12px', backgroundColor: '#16a34a', color: 'white', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>
-                      কোড ভেরিফাই করুন
-                    </button>
-                  </div>
-                )}
-              </div>
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <button type="button" onClick={() => setStep(1)} style={{ width: '30%', padding: '12px', backgroundColor: '#e2e8f0', color: '#475569', border: 'none', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer' }}>◀ পিছনে</button>
-                <button type="button" onClick={() => { if (formData.fatherName && formData.motherName && phoneVerified) setStep(3); else alert('অভিভাবকের তথ্য এবং ফোন ওটিপি ভেরিফিকেশন করুন!'); }} style={{ width: '70%', padding: '12px', backgroundColor: '#16a34a', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer' }}>পরবর্তী ধাপ ➔</button>
-              </div>
-            </div>
-          )}
-
-          {step === 3 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                <div>
-                  <label className="form-label">বিভাগ <span>*</span></label>
-                  <input type="text" required className="form-input" value={formData.division} onChange={e => setFormData({ ...formData, division: e.target.value })} />
-                </div>
-                <div>
-                  <label className="form-label">জেলা <span>*</span></label>
-                  <input type="text" required className="form-input" value={formData.district} onChange={e => setFormData({ ...formData, district: e.target.value })} />
-                </div>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                <div>
-                  <label className="form-label">থানা <span>*</span></label>
-                  <input type="text" required className="form-input" value={formData.thana} onChange={e => setFormData({ ...formData, thana: e.target.value })} />
-                </div>
-                <div>
-                  <label className="form-label">গ্রাম <span>*</span></label>
-                  <input type="text" required placeholder="গ্রামের নাম" className="form-input" value={formData.village} onChange={e => setFormData({ ...formData, village: e.target.value })} />
-                </div>
-              </div>
-              <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                <button type="button" onClick={() => setStep(2)} style={{ width: '30%', padding: '12px', backgroundColor: '#e2e8f0', color: '#475569', border: 'none', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer' }}>◀ পিছনে</button>
-                <button type="button" onClick={() => { if (formData.village) setStep(4); else alert('ঠিকানা লিখুন'); }} style={{ width: '70%', padding: '12px', backgroundColor: '#16a34a', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer' }}>পরবর্তী ধাপ ➔</button>
-              </div>
-            </div>
-          )}
-
-          {step === 4 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {activeCamera && (
-                <div style={{ position: 'relative', backgroundColor: '#000', borderRadius: '16px', overflow: 'hidden', textAlign: 'center', padding: '10px' }}>
-                  <video ref={videoRef} autoPlay playsInline style={{ width: '100%', maxHeight: '250px', borderRadius: '10px' }}></video>
-                  <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginTop: '8px' }}>
-                    <button type="button" onClick={() => capturePhoto(activeCamera)} style={{ backgroundColor: '#22c55e', color: 'white', border: 'none', padding: '8px 20px', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer' }}>📷 ক্যাপচার</button>
-                    <button type="button" onClick={stopCamera} style={{ backgroundColor: '#ef4444', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '20px', fontSize: '12px', cursor: 'pointer' }}>বাতিল</button>
-                  </div>
-                </div>
-              )}
-
-              <div className="cam-box">
-                <p style={{ margin: '0 0 6px 0', fontSize: '13px', fontWeight: 'bold' }}>১. শিক্ষার্থীর ছবি <span>*</span></p>
-                {formData.studentPhoto ? <img src={formData.studentPhoto} alt="Student" style={{ width: '80px', height: '80px', borderRadius: '10px', objectFit: 'cover' }} /> : <button type="button" onClick={() => startCamera('studentPhoto')} style={{ backgroundColor: '#0284c7', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '8px', fontSize: '12px', cursor: 'pointer', fontWeight: 'bold' }}>📷 ক্যামেরা খুলুন</button>}
-              </div>
-
-              <div className="cam-box">
-                <p style={{ margin: '0 0 6px 0', fontSize: '13px', fontWeight: 'bold' }}>২. পিতা/মাতার ছবি <span>*</span></p>
-                {formData.parentPhoto ? <img src={formData.parentPhoto} alt="Parent" style={{ width: '80px', height: '80px', borderRadius: '10px', objectFit: 'cover' }} /> : <button type="button" onClick={() => startCamera('parentPhoto')} style={{ backgroundColor: '#0284c7', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '8px', fontSize: '12px', cursor: 'pointer', fontWeight: 'bold' }}>📷 ক্যামেরা খুলুন</button>}
-              </div>
-
-              <div className="cam-box">
-                <p style={{ margin: '0 0 6px 0', fontSize: '13px', fontWeight: 'bold' }}>৩. NID কার্ড (AI স্ক্যান) <span>*</span></p>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '8px' }}>
-                  <div>
-                    <span style={{ fontSize: '11px', color: '#64748b' }}>Front</span>
-                    {formData.nidFront ? <img src={formData.nidFront} alt="NID Front" style={{ width: '100%', height: '50px', borderRadius: '6px', objectFit: 'cover' }} /> : <button type="button" onClick={() => startCamera('nidFront')} style={{ width: '100%', backgroundColor: '#059669', color: 'white', border: 'none', padding: '6px', borderRadius: '6px', fontSize: '11px', cursor: 'pointer' }}>📸 Capture</button>}
-                  </div>
-                  <div>
-                    <span style={{ fontSize: '11px', color: '#64748b' }}>Back</span>
-                    {formData.nidBack ? <img src={formData.nidBack} alt="NID Back" style={{ width: '100%', height: '50px', borderRadius: '6px', objectFit: 'cover' }} /> : <button type="button" onClick={() => startCamera('nidBack')} style={{ width: '100%', backgroundColor: '#059669', color: 'white', border: 'none', padding: '6px', borderRadius: '6px', fontSize: '11px', cursor: 'pointer' }}>📸 Capture</button>}
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                <button type="button" onClick={() => setStep(3)} style={{ width: '30%', padding: '12px', backgroundColor: '#e2e8f0', color: '#475569', border: 'none', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer' }}>◀ পিছনে</button>
-                <button type="submit" style={{ width: '70%', padding: '12px', backgroundColor: '#16a34a', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 'bold', fontSize: '15px', cursor: 'pointer' }}>✅ আবেদন জমা দিন</button>
-              </div>
-            </div>
-          )}
-        </form>
-      </div>
-    </div>
-  );
-}
-
-// ==========================================
-// ২. ইনলাইন ফুটার কম্পোনেন্ট (Footer)
-// ==========================================
-function Footer() {
-  const whatsappNumber = "8801918568313";
-  return (
-    <footer id="contact" style={{ backgroundColor: '#0f172a', color: '#94a3b8', padding: '50px 20px 30px 20px' }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        <div style={{ background: 'linear-gradient(145deg, #1e293b, #0f172a)', border: '1px solid #334155', borderRadius: '20px', padding: '24px', maxWidth: '600px', margin: '0 auto 40px auto', textAlign: 'center' }}>
-          <img src="https://i.postimg.cc/mD8Tmy4h/1000021303.jpg" alt="Md Firoj Hasan" style={{ width: '90px', height: '90px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #10b981' }} />
-          <h3 style={{ fontSize: '20px', fontWeight: '800', color: '#38bdf8', margin: '10px 0 2px 0' }}>Md Firoj Hasan</h3>
-          <p style={{ color: '#cbd5e1', fontSize: '13px', margin: '0 0 16px 0' }}>Full-Stack Web Developer & Admin</p>
-          <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-            <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer" style={{ padding: '8px 16px', borderRadius: '8px', fontSize: '13px', backgroundColor: '#25D366', color: '#ffffff', textDecoration: 'none', fontWeight: 'bold' }}>💬 WhatsApp</a>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" style={{ padding: '8px 16px', borderRadius: '8px', fontSize: '13px', backgroundColor: '#1877F2', color: '#ffffff', textDecoration: 'none', fontWeight: 'bold' }}>🌐 Facebook</a>
-          </div>
-        </div>
-        <div style={{ textAlign: 'center', marginBottom: '25px', borderBottom: '1px solid #1e293b', paddingBottom: '20px' }}>
-          <h4 style={{ color: '#ffffff', fontSize: '18px', margin: '0 0 8px 0' }}>চিলমারী প্রি ক্যাডেট মাদ্রাসা</h4>
-          <p style={{ color: '#94a3b8', fontSize: '13px', margin: '0 0 8px 0' }}>📍 ঠিকানা: চিলমারী, কুড়িগ্রাম, বাংলাদেশ</p>
-          <p style={{ color: '#38bdf8', fontSize: '14px', fontWeight: 'bold', margin: 0 }}>📞 যোগাযোগ: +880 1918-568313</p>
-        </div>
-        <div style={{ textAlign: 'center', fontSize: '12px', color: '#64748b' }}>© ২০২৬ চিলমারী প্রি ক্যাডেট মাদ্রাসা। সর্বস্বত্ব সংরক্ষিত।</div>
-      </div>
-    </footer>
-  );
-}
-
-// ==========================================
-// ৩. মূল অ্যাপ কম্পোনেন্ট (App)
-// ==========================================
-export default function App() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const whatsappNumber = "8801918568313";
 
   return (
     <div style={{ fontFamily: "'Hind Siliguri', 'Segoe UI', sans-serif", backgroundColor: '#f8fafc', color: '#0f172a', minHeight: '100vh', margin: 0, padding: 0, position: 'relative' }}>
-      
+      {/* গ্লোবাল এবং স্টাইলিং রুলস */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
         * { box-sizing: border-box; scroll-behavior: smooth; }
@@ -369,9 +23,10 @@ export default function App() {
         .nav-link:hover { color: #15803d; }
         .btn-primary { background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(22, 163, 74, 0.35); }
-        .card { background: #ffffff; border-radius: 18px; padding: 24px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0; }
+        .card { background: #ffffff; border-radius: 18px; padding: 24px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01); border: 1px solid #e2e8f0; }
         .badge { background: #dcfce7; color: #15803d; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; display: inline-block; }
         
+        /* ভাসমান লাইভ চ্যাট বাটন */
         .live-chat-btn {
           position: fixed;
           bottom: 25px;
@@ -387,15 +42,22 @@ export default function App() {
           text-decoration: none;
           font-weight: bold;
           font-size: 14px;
-          z-index: 900;
+          z-index: 1000;
+          transition: all 0.3s ease;
+        }
+        .live-chat-btn:hover {
+          transform: scale(1.05);
+          box-shadow: 0 12px 25px rgba(37, 211, 102, 0.6);
         }
       `}</style>
 
-      {/* টপ বার */}
+      {/* টপ কন্টাক্ট বার */}
       <div style={{ backgroundColor: '#14532d', color: '#f0fdf4', padding: '8px 20px', fontSize: '13px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
           <div>📍 চিলমারী, কুড়িগ্রাম, বাংলাদেশ</div>
-          <div>📞 যোগাযোগ: <a href="tel:+8801918568313" style={{ color: '#ffffff', fontWeight: 'bold', textDecoration: 'none' }}>01918568313</a></div>
+          <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+            <span>📞 যোগাযোগ: <a href="tel:+8801521553003" style={{ color: '#ffffff', fontWeight: 'bold', textDecoration: 'none' }}>+880 1521-553003</a></span>
+          </div>
         </div>
       </div>
 
@@ -403,7 +65,7 @@ export default function App() {
       <nav style={{ backgroundColor: '#ffffff', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '14px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: 'linear-gradient(135deg, #16a34a, #15803d)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '22px' }}>
+            <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: 'linear-gradient(135deg, #16a34a, #15803d)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '22px', boxShadow: '0 4px 10px rgba(22, 163, 74, 0.3)' }}>
               চ
             </div>
             <div>
@@ -412,23 +74,29 @@ export default function App() {
             </div>
           </div>
 
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ background: '#f1f5f9', border: 'none', padding: '8px 12px', borderRadius: '8px', fontSize: '20px', cursor: 'pointer' }}>
+          {/* মোবাইল মেনু টগল বাটন */}
+          <button 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
+            style={{ background: '#f1f5f9', border: 'none', padding: '8px 12px', borderRadius: '8px', fontSize: '20px', cursor: 'pointer', color: '#1e293b' }}
+          >
             {mobileMenuOpen ? '✕' : '☰'}
           </button>
         </div>
 
+        {/* মোবাইল ড্রপডাউন মেনু */}
         {mobileMenuOpen && (
-          <div style={{ backgroundColor: '#ffffff', borderTop: '1px solid #f1f5f9', padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <div style={{ backgroundColor: '#ffffff', borderTop: '1px solid #f1f5f9', padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '14px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}>
             <a href="#home" className="nav-link" onClick={() => setMobileMenuOpen(false)}>হোম</a>
             <a href="#about" className="nav-link" onClick={() => setMobileMenuOpen(false)}>প্রধান শিক্ষকের বাণী</a>
+            <a href="#notice" className="nav-link" onClick={() => setMobileMenuOpen(false)}>নোটিশ বোর্ড</a>
             <a href="#contact" className="nav-link" onClick={() => setMobileMenuOpen(false)}>যোগাযোগ</a>
-            <button className="btn-primary" onClick={() => { setMobileMenuOpen(false); setIsModalOpen(true); }}>অনলাইন ভর্তি</button>
+            <a href="#admission" className="btn-primary" style={{ textAlign: 'center' }} onClick={() => setMobileMenuOpen(false)}>অনলাইন ভর্তি</a>
           </div>
         )}
       </nav>
 
       {/* হিরো সেকশন */}
-      <header id="home" style={{ background: 'linear-gradient(135deg, #064e3b 0%, #14532d 50%, #166534 100%)', color: 'white', padding: '50px 20px 70px 20px', textAlign: 'center' }}>
+      <header id="home" style={{ background: 'linear-gradient(135deg, #064e3b 0%, #14532d 50%, #166534 100%)', color: 'white', padding: '50px 20px 70px 20px', textAlign: 'center', position: 'relative' }}>
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <span className="badge" style={{ backgroundColor: 'rgba(255,255,255,0.2)', color: '#ffffff', marginBottom: '16px' }}>
             🎓 নতুন সেশনে ভর্তি চলছে
@@ -440,10 +108,10 @@ export default function App() {
             আমরা দিচ্ছি আধুনিক ক্বওমী ও জেনারেল শিক্ষা ব্যবস্থার এক অনন্য সমন্বয়। অভিজ্ঞ শিক্ষক মণ্ডলীর তত্ত্বাবধানে আপনার সন্তানের দ্বীনি শিক্ষার পথ সুগম করুন।
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button onClick={() => setIsModalOpen(true)} className="btn-primary" style={{ backgroundColor: '#ffffff', color: '#14532d', fontWeight: 'bold', fontSize: '16px' }}>
-              📝 ভর্তি আবেদন করুন (ডিজিটাল ফরম)
-            </button>
-            <a href="tel:01918568313" className="btn-primary" style={{ backgroundColor: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)' }}>
+            <a href="#admission" className="btn-primary" style={{ backgroundColor: '#ffffff', color: '#14532d', fontWeight: 'bold' }}>
+              ভর্তি আবেদন করুন
+            </a>
+            <a href="tel:+8801521553003" className="btn-primary" style={{ backgroundColor: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)' }}>
               📞 সরাসরি কল দিন
             </a>
           </div>
@@ -453,11 +121,17 @@ export default function App() {
       {/* মূল কন্টেন্ট */}
       <main style={{ maxWidth: '1200px', margin: '-30px auto 40px auto', padding: '0 16px', position: 'relative', zIndex: 10 }}>
         
-        {/* প্রধান শিক্ষক সেকশন */}
+        {/* প্রধান শিক্ষকের তথ্য ও বাণী সেকশন */}
         <section id="about" style={{ marginBottom: '32px' }}>
           <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
-            <div style={{ textAlign: 'center' }}>
-              <img src="https://i.postimg.cc/xd8py0DW/1786523361131.jpg" alt="Arif Ashab Khorshed" style={{ width: '130px', height: '130px', borderRadius: '50%', objectFit: 'cover', border: '4px solid #16a34a' }} />
+            <div style={{ textAlign: 'center', flexShrink: 0 }}>
+              <div style={{ position: 'relative', display: 'inline-block' }}>
+                <img 
+                  src="https://i.postimg.cc/xd8py0DW/1786523361131.jpg" 
+                  alt="Arif Ashab Khorshed" 
+                  style={{ width: '130px', height: '130px', borderRadius: '50%', objectFit: 'cover', border: '4px solid #16a34a', boxShadow: '0 6px 16px rgba(0,0,0,0.15)' }}
+                />
+              </div>
               <h3 style={{ margin: '12px 0 2px 0', fontSize: '20px', color: '#0f172a', fontWeight: '700' }}>Arif Ashab Khorshed</h3>
               <span className="badge">প্রধান শিক্ষক</span>
             </div>
@@ -467,40 +141,127 @@ export default function App() {
                 প্রধান শিক্ষকের বার্তা
               </h3>
               <p style={{ lineHeight: '1.8', color: '#334155', margin: 0, fontSize: '15px' }}>
-                "বিসমিল্লাহির রহমানির রহিম। চিলমারী প্রি ক্যাডেট মাদ্রাসায় আপনাকে জানাই আন্তরিক শুভেচ্ছা। আমাদের সুনির্দিষ্ট লক্ষ্য হলো কোমলমতি শিশুদের ধর্মীয় মূল্যবোধ, উত্তম চরিত্র এবং আধুনিক শিক্ষার মাধ্যমে এক আদর্শ সুনাগরিক হিসেবে গড়ে তোলা।"
+                "বিসমিল্লাহির রহমানির রহিম। চিলমারী প্রি ক্যাডেট মাদ্রাসায় আপনাকে জানাই আন্তরিক শুভেচ্ছা। আমাদের সুনির্দিষ্ট লক্ষ্য হলো কোমলমতি শিশুদের ধর্মীয় মূল্যবোধ, উত্তম চরিত্র এবং আধুনিক শিক্ষার মাধ্যমে এক আদর্শ সুনাগরিক হিসেবে গড়ে তোলা। অভিজ্ঞ শিক্ষক মণ্ডলীর পরম মমতায় আমরা শিক্ষার্থীদের মেধা ও সুপ্ত প্রতিভার বিকাশে সততার সাথে দায়িত্ব পালন করে যাচ্ছি।"
               </p>
             </div>
           </div>
         </section>
 
-        {/* নতুন প্রমোশনাল ভর্তি ব্যানার */}
-        <section id="admission" style={{ marginBottom: '32px' }}>
-          <div className="card" style={{ background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)', color: 'white', padding: '36px 20px', borderRadius: '24px', textAlign: 'center' }}>
-            <div style={{ maxWidth: '650px', margin: '0 auto' }}>
-              <span style={{ backgroundColor: 'rgba(255,255,255,0.2)', padding: '6px 16px', borderRadius: '20px', fontSize: '13px', fontWeight: 'bold' }}>
-                ডিজিটাল ভর্তি পোর্টাল
-              </span>
-              <h2 style={{ fontSize: '26px', fontWeight: '800', margin: '14px 0 10px 0' }}>সহজ ও দ্রুত অনলাইন ভর্তি ফরম পূরণ করুন</h2>
-              <p style={{ color: '#e0f2fe', fontSize: '15px', marginBottom: '24px', lineHeight: '1.6' }}>
-                ঘরে বসেই লাইভ ফটো ক্যাপচার ও ফোন নম্বর ওটিপি ভেরিফিকেশনের মাধ্যমে কয়েক মিনিটে আপনার সন্তানের ভর্তি ফর্মটি জমা দিন।
-              </p>
-              <button onClick={() => setIsModalOpen(true)} style={{ backgroundColor: '#ffffff', color: '#047857', border: 'none', padding: '14px 32px', borderRadius: '12px', fontSize: '17px', fontWeight: '800', cursor: 'pointer' }}>
-                ✨ ভর্তি ফরম খুলুন
-              </button>
+        {/* নোটিশ ও বৈশিষ্ট্য */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginBottom: '32px' }}>
+          
+          {/* নোটিশ বোর্ড */}
+          <div id="notice" className="card">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', borderBottom: '2px solid #f1f5f9', paddingBottom: '10px' }}>
+              <h3 style={{ margin: 0, fontSize: '18px', color: '#166534', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                📌 নোটিশ বোর্ড
+              </h3>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ padding: '12px', borderRadius: '10px', background: '#f8fafc', borderLeft: '4px solid #16a34a' }}>
+                <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold' }}>১২ আগস্ট ২০২৬</span>
+                <p style={{ margin: '4px 0 0 0', fontSize: '14px', fontWeight: '600' }}>২০২৬-২৭ শিক্ষাবর্ষের নতুন ভর্তি ফরম অনলাইন ও অফিসে পাওয়া যাচ্ছে।</p>
+              </div>
+              <div style={{ padding: '12px', borderRadius: '10px', background: '#f8fafc', borderLeft: '4px solid #eab308' }}>
+                <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold' }}>১৫ আগস্ট ২০২৬</span>
+                <p style={{ margin: '4px 0 0 0', fontSize: '14px', fontWeight: '600' }}>অভিভাবক সমাবেশ ও বার্ষিক মূল্যায়নী সভা সংক্রান্ত নোটিশ।</p>
+              </div>
             </div>
           </div>
+
+          {/* বৈশিষ্ট্যসমূহ */}
+          <div className="card">
+            <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', color: '#166534', borderBottom: '2px solid #f1f5f9', paddingBottom: '10px' }}>
+              🌟 আমাদের বিশেষত্ব
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {['অভিজ্ঞ ও দ্বীনদার শিক্ষক মণ্ডলী', 'হিফজ ও বিশুদ্ধ ক্বিরাআত প্রশিক্ষণ', 'কম্পিউটার ও তথ্যপ্রযুক্তি শিক্ষা', 'নিরাপদ ও সিসিটিভি নিয়ন্ত্রিত ক্যাম্পাস', 'সুপরিসর ক্লাসরুম ও মনোরম পরিবেশ'].map((item, idx) => (
+                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', color: '#334155' }}>
+                  <span style={{ color: '#16a34a', fontWeight: 'bold' }}>✓</span>
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+
+        {/* অনলাইন ভর্তি ফর্ম */}
+        <section id="admission" className="card" style={{ maxWidth: '600px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <span className="badge">সহজ নিয়ম</span>
+            <h3 style={{ fontSize: '20px', color: '#166534', margin: '8px 0 4px 0' }}>অনলাইন ভর্তি আবেদন</h3>
+            <p style={{ color: '#64748b', fontSize: '13px', margin: 0 }}>আপনার তথ্য জমা দিন, আমরা অতি শীঘ্রই আপনার সাথে যোগাযোগ করবো</p>
+          </div>
+
+          {submitted ? (
+            <div style={{ backgroundColor: '#dcfce7', border: '1px solid #86efac', color: '#14532d', padding: '20px', borderRadius: '12px', textAlign: 'center' }}>
+              <div style={{ fontSize: '30px', marginBottom: '8px' }}>🎉</div>
+              <h4 style={{ margin: '0 0 4px 0', fontSize: '18px' }}>আবেদন সফলভাবে গৃহীত হয়েছে!</h4>
+              <p style={{ margin: 0, fontSize: '14px' }}>ধন্যবাদ, আমরা দ্রুতই আপনার সাথে যোগাযোগ করবো।</p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '4px', color: '#334155' }}>শিক্ষার্থীর নাম</label>
+                <input 
+                  type="text" 
+                  required 
+                  placeholder="শিক্ষার্থীর নাম লিখুন" 
+                  value={formData.studentName}
+                  onChange={(e) => setFormData({...formData, studentName: e.target.value})}
+                  style={{ width: '100%', padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '14px', outline: 'none' }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '4px', color: '#334155' }}>অভিভাবকের মোবাইল নম্বর</label>
+                <input 
+                  type="tel" 
+                  required 
+                  placeholder="০১৫২১-৫৫৩০০৩" 
+                  value={formData.phone}
+                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                  style={{ width: '100%', padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '14px', outline: 'none' }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '4px', color: '#334155' }}>কাঙ্ক্ষিত শ্রেণী</label>
+                <select 
+                  required 
+                  value={formData.class}
+                  onChange={(e) => setFormData({...formData, class: e.target.value})}
+                  style={{ width: '100%', padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '14px', outline: 'none', backgroundColor: 'white' }}
+                >
+                  <option value="">শ্রেণী নির্বাচন করুন...</option>
+                  <option value="play">প্লে শ্রেণী</option>
+                  <option value="nursery">নার্সারি</option>
+                  <option value="one">প্রথম শ্রেণী</option>
+                  <option value="two">দ্বিতীয় শ্রেণী</option>
+                  <option value="hifz">হিফজ বিভাগ</option>
+                </select>
+              </div>
+
+              <button type="submit" className="btn-primary" style={{ marginTop: '8px', width: '100%', fontSize: '16px' }}>
+                আবেদন ফর্ম জমা দিন
+              </button>
+            </form>
+          )}
         </section>
 
       </main>
 
-      {/* ভাসমান লাইভ চ্যাট */}
-      <a href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('হ্যালো, আমি ভর্তি সম্পর্কিত তথ্য জানতে চাই।')}`} target="_blank" rel="noopener noreferrer" className="live-chat-btn">
+      {/* ভাসমান লাইভ চ্যাট বাটন */}
+      <a 
+        href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('হ্যালো ফিরোজ ভাই, ওয়েবসাইট/অ্যাপ বা লাইভ সাপোর্ট সম্পর্কিত সাহায্য প্রয়োজন।')}`} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="live-chat-btn"
+      >
         <span>💬</span>
         <span>লাইভ চ্যাট</span>
       </a>
-
-      {/* ভর্তি পপ-আপ মোডাল */}
-      <AdmissionModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
       {/* ফুটার */}
       <Footer />
