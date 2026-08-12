@@ -11,7 +11,7 @@ export default function App() {
     setSubmitted(true);
   };
 
-  const whatsappNumber = "8801521553003";
+  const whatsappNumber = "8801918568313";
 
   return (
     <div style={{ fontFamily: "'Hind Siliguri', 'Segoe UI', sans-serif", backgroundColor: '#f8fafc', color: '#0f172a', minHeight: '100vh', margin: 0, padding: 0, position: 'relative' }}>
@@ -26,12 +26,12 @@ export default function App() {
         .card { background: #ffffff; border-radius: 18px; padding: 24px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01); border: 1px solid #e2e8f0; }
         .badge { background: #dcfce7; color: #15803d; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; display: inline-block; }
         
-        /* ভাসমান লাইভ চ্যাট বাটন অ্যানিমেশন */
+        /* ভাসমান লাইভ চ্যাট বাটন */
         .live-chat-btn {
           position: fixed;
           bottom: 25px;
           right: 25px;
-          backgroundColor: #25D366;
+          background-color: #25D366;
           color: white;
           border-radius: 50px;
           padding: 12px 20px;
@@ -252,7 +252,7 @@ export default function App() {
 
       </main>
 
-      {/* ভাসমান লাইভ চ্যাট বাটন (Floating Live Chat Widget) */}
+      {/* ভাসমান লাইভ চ্যাট বাটন */}
       <a 
         href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('হ্যালো ফিরোজ ভাই, ওয়েবসাইট/অ্যাপ বা লাইভ সাপোর্ট সম্পর্কিত সাহায্য প্রয়োজন।')}`} 
         target="_blank" 
@@ -263,7 +263,7 @@ export default function App() {
         <span>লাইভ চ্যাট</span>
       </a>
 
-      {/* নতুন আপডেট করা ফুটার */}
+      {/* ফুটার */}
       <Footer />
     </div>
   );
