@@ -11,43 +11,46 @@ export default function App() {
   };
 
   return (
-    <div style={{ fontFamily: "'Hind Siliguri', 'Segoe UI', sans-serif", backgroundColor: '#f1f5f9', color: '#1e293b', minHeight: '100vh', margin: 0, padding: 0 }}>
-      {/* গুগল ফন্ট ইম্পোর্ট করার লিংক (ইনডেক্স সাইটে না থাকলে) */}
+    <div style={{ fontFamily: "'Hind Siliguri', 'Segoe UI', sans-serif", backgroundColor: '#f8fafc', color: '#0f172a', minHeight: '100vh', margin: 0, padding: 0 }}>
+      {/* গ্লোবাল এবং স্টাইলিং রুলস */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
-        * { box-sizing: border-box; }
-        .nav-link { color: #334155; text-decoration: none; font-weight: 500; transition: color 0.2s; }
+        * { box-sizing: border-box; scroll-behavior: smooth; }
+        .nav-link { color: #334155; text-decoration: none; font-weight: 600; transition: color 0.2s; }
         .nav-link:hover { color: #15803d; }
-        .btn-primary { background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3); }
-        .card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        .btn-primary { background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(22, 163, 74, 0.35); }
+        .card { background: #ffffff; border-radius: 18px; padding: 24px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01); border: 1px solid #e2e8f0; }
+        .badge { background: #dcfce7; color: #15803d; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; display: inline-block; }
       `}</style>
 
+      {/* টপ কন্টাক্ট বার */}
+      <div style={{ backgroundColor: '#14532d', color: '#f0fdf4', padding: '8px 20px', fontSize: '13px' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+          <div>📍 চিলমারী, কুড়িগ্রাম, বাংলাদেশ</div>
+          <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+            <span>📞 যোগাযোগ: <a href="tel:+8801521553003" style={{ color: '#ffffff', fontWeight: 'bold', textDecoration: 'none' }}>+880 1521-553003</a></span>
+          </div>
+        </div>
+      </div>
+
       {/* নেভিগেশন বার */}
-      <nav style={{ backgroundColor: '#ffffff', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+      <nav style={{ backgroundColor: '#ffffff', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '14px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#16a34a', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '20px' }}>
+            <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: 'linear-gradient(135deg, #16a34a, #15803d)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '22px', boxShadow: '0 4px 10px rgba(22, 163, 74, 0.3)' }}>
               চ
             </div>
             <div>
-              <h1 style={{ fontSize: '18px', fontWeight: '700', color: '#14532d', margin: 0 }}>চিলমারী প্রি ক্যাডেট মাদ্রাসা</h1>
-              <p style={{ fontSize: '12px', color: '#64748b', margin: 0 }}>দ্বীন ও আধুনিক শিক্ষার অপূর্ব সমন্বয়</p>
+              <h1 style={{ fontSize: '18px', fontWeight: '800', color: '#14532d', margin: 0, lineHeight: 1.2 }}>চিলমারী প্রি ক্যাডেট মাদ্রাসা</h1>
+              <p style={{ fontSize: '11px', color: '#64748b', margin: 0, fontStyle: 'italic' }}>দ্বীন ও আধুনিক শিক্ষার অপূর্ব মেলবন্ধন</p>
             </div>
           </div>
 
-          {/* ডেক্সটপ মেনু */}
-          <div style={{ display: 'none', gap: '24px', alignItems: 'center' }} className="desktop-menu">
-            <a href="#home" className="nav-link">হোম</a>
-            <a href="#about" className="nav-link">আমাদের সম্পর্কে</a>
-            <a href="#notice" className="nav-link">নোটিশ বোর্ড</a>
-            <a href="#admission" className="btn-primary" style={{ textDecoration: 'none' }}>অনলাইন ভর্তি</a>
-          </div>
-
-          {/* মোবাইল মেনু বাটন */}
+          {/* মোবাইল মেনু টগল বাটন */}
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
-            style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#334155' }}
+            style={{ background: '#f1f5f9', border: 'none', padding: '8px 12px', borderRadius: '8px', fontSize: '20px', cursor: 'pointer', color: '#1e293b' }}
           >
             {mobileMenuOpen ? '✕' : '☰'}
           </button>
@@ -55,124 +58,129 @@ export default function App() {
 
         {/* মোবাইল ড্রপডাউন মেনু */}
         {mobileMenuOpen && (
-          <div style={{ backgroundColor: '#ffffff', borderTop: '1px solid #e2e8f0', padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div style={{ backgroundColor: '#ffffff', borderTop: '1px solid #f1f5f9', padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '14px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}>
             <a href="#home" className="nav-link" onClick={() => setMobileMenuOpen(false)}>হোম</a>
-            <a href="#about" className="nav-link" onClick={() => setMobileMenuOpen(false)}>আমাদের সম্পর্কে</a>
+            <a href="#about" className="nav-link" onClick={() => setMobileMenuOpen(false)}>প্রধান শিক্ষকের বাণী</a>
             <a href="#notice" className="nav-link" onClick={() => setMobileMenuOpen(false)}>নোটিশ বোর্ড</a>
-            <a href="#admission" className="btn-primary" style={{ textAlign: 'center', textDecoration: 'none' }} onClick={() => setMobileMenuOpen(false)}>অনলাইন ভর্তি</a>
+            <a href="#contact" className="nav-link" onClick={() => setMobileMenuOpen(false)}>যোগাযোগ</a>
+            <a href="#admission" className="btn-primary" style={{ textAlign: 'center' }} onClick={() => setMobileMenuOpen(false)}>অনলাইন ভর্তি</a>
           </div>
         )}
       </nav>
 
       {/* হিরো সেকশন */}
-      <header id="home" style={{ background: 'linear-gradient(135deg, #14532d 0%, #166534 50%, #15803d 100%)', color: 'white', padding: '60px 20px', textAlignment: 'center' }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
-          <span style={{ background: 'rgba(255,255,255,0.15)', padding: '6px 16px', borderRadius: '20px', fontSize: '14px', fontWeight: '500' }}>
-            শিক্ষা বর্ষ ২০২৬-২০২৭ এর ভর্তি চলছে
+      <header id="home" style={{ background: 'linear-gradient(135deg, #064e3b 0%, #14532d 50%, #166534 100%)', color: 'white', padding: '50px 20px 70px 20px', textAlign: 'center', position: 'relative' }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <span className="badge" style={{ backgroundColor: 'rgba(255,255,255,0.2)', color: '#ffffff', marginBottom: '16px' }}>
+            🎓 নতুন সেশনে ভর্তি চলছে
           </span>
-          <h2 style={{ fontSize: '2.2rem', fontWeight: '800', marginTop: '16px', marginBottom: '16px', lineHeight: '1.3' }}>
-            সুশিক্ষা ও ইসলামিক নৈতিকতায় গড়ে উঠুক আপনার সন্তানের ভবিষ্যৎ
+          <h2 style={{ fontSize: '2.1rem', fontWeight: '800', margin: '16px 0', lineHeight: '1.3' }}>
+            সুশিক্ষা ও সুন্নাত ভিত্তিক আদর্শ জীবন গড়ার বিশ্বস্ত প্রতিষ্ঠান
           </h2>
-          <p style={{ fontSize: '16px', opacity: 0.9, lineHeight: '1.6', marginBottom: '28px' }}>
-            চিলমারী প্রি ক্যাডেট মাদ্রাসায় আমরা সাধারণ শিক্ষার পাশাপাশি হিফজুল কুরআন ও দ্বীনি শিক্ষার এক আধুনিক রূপায়ণ নিশ্চিত করি।
+          <p style={{ fontSize: '15px', color: '#ecfdf5', lineHeight: '1.7', marginBottom: '28px' }}>
+            আমরা দিচ্ছি আধুনিক ক্বওমী ও জেনারেল শিক্ষা ব্যবস্থার এক অনন্য সমন্বয়। অভিজ্ঞ শিক্ষক মণ্ডলীর তত্ত্বাবধানে আপনার সন্তানের দ্বীনি শিক্ষার পথ সুগম করুন।
           </p>
-          <a href="#admission" className="btn-primary" style={{ backgroundColor: '#ffffff', color: '#15803d', display: 'inline-block', textDecoration: 'none', fontSize: '16px' }}>
-            ভর্তির জন্য আবেদন করুন
-          </a>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <a href="#admission" className="btn-primary" style={{ backgroundColor: '#ffffff', color: '#14532d', fontWeight: 'bold' }}>
+              ভর্তি আবেদন করুন
+            </a>
+            <a href="tel:+8801521553003" className="btn-primary" style={{ backgroundColor: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)' }}>
+              📞 সরাসরি কল দিন
+            </a>
+          </div>
         </div>
       </header>
 
-      {/* মূল কনটেন্ট কন্টেইনার */}
-      <main style={{ maxWidth: '1200px', margin: '40px auto', padding: '0 20px' }}>
+      {/* মূল কন্টেন্ট */}
+      <main style={{ maxWidth: '1200px', margin: '-30px auto 40px auto', padding: '0 16px', position: 'relative', zIndex: 10 }}>
         
-        {/* প্রধান শিক্ষকের বাণী সেকশন */}
-        <section id="about" style={{ marginBottom: '40px' }}>
-          <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '24px', alignItems: 'center' }}>
-            <div style={{ flexShrink: 0, textAlignment: 'center' }}>
-              <img 
-                src="https://via.placeholder.com/150" 
-                alt="প্রধান শিক্ষক" 
-                style={{ width: '140px', height: '140px', borderRadius: '50%', objectFit: 'cover', border: '4px solid #22c55e', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-              />
-              <h4 style={{ margin: '12px 0 2px 0', fontSize: '18px', color: '#0f172a' }}>মাওলানা মোঃ আব্দুস সবুর</h4>
-              <p style={{ margin: 0, fontSize: '14px', color: '#16a34a', fontWeight: '600' }}>প্রধান শিক্ষক</p>
+        {/* প্রধান শিক্ষকের তথ্য ও বাণী সেকশন */}
+        <section id="about" style={{ marginBottom: '32px' }}>
+          <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
+            <div style={{ textAlignment: 'center', flexShrink: 0 }}>
+              <div style={{ position: 'relative', display: 'inline-block' }}>
+                <img 
+                  src="https://i.postimg.cc/xd8py0DW/1786523361131.jpg" 
+                  alt="Arif Ashab Khorshed" 
+                  style={{ width: '130px', height: '130px', borderRadius: '50%', objectFit: 'cover', border: '4px solid #16a34a', boxShadow: '0 6px 16px rgba(0,0,0,0.15)' }}
+                />
+              </div>
+              <h3 style={{ margin: '12px 0 2px 0', fontSize: '20px', color: '#0f172a', fontWeight: '700' }}>Arif Ashab Khorshed</h3>
+              <span className="badge">প্রধান শিক্ষক</span>
             </div>
-            <div style={{ flex: 1 }}>
-              <h3 style={{ fontSize: '22px', color: '#166534', marginTop: 0, marginBottom: '12px' }}>প্রধান শিক্ষকের বাণী</h3>
-              <p style={{ lineHeight: '1.7', color: '#475569', margin: 0, fontSize: '15px' }}>
-                "বিসমিল্লাহির রহমানির রহিম। চিলমারী প্রি ক্যাডেট মাদ্রাসায় আপনাকে স্বাগতম। আমাদের মূল লক্ষ্য হলো শিশুদের ছোটবেলা থেকেই দ্বীনি শিক্ষার সুবাস ছড়ানোর পাশাপাশি আধুনিক জ্ঞান-বিজ্ঞানে পারদর্শী করে তোলা। যোগ্য শিক্ষক মণ্ডলী ও সুন্দর পরিবেশের মাধ্যমে আপনার সন্তানের সুপ্ত প্রতিভার বিকাশ ঘটাতে আমরা অঙ্গীকারবদ্ধ।"
+            
+            <div style={{ textAlign: 'left', width: '100%' }}>
+              <h3 style={{ fontSize: '20px', color: '#166534', marginTop: 0, marginBottom: '12px', borderBottom: '2px solid #f1f5f9', paddingBottom: '8px' }}>
+                প্রধান শিক্ষকের বার্তা
+              </h3>
+              <p style={{ lineHeight: '1.8', color: '#334155', margin: 0, fontSize: '15px' }}>
+                "বিসমিল্লাহির রহমানির রহিম। চিলমারী প্রি ক্যাডেট মাদ্রাসায় আপনাকে জানাই আন্তরিক শুভেচ্ছা। আমাদের সুনির্দিষ্ট লক্ষ্য হলো কোমলমতি শিশুদের ধর্মীয় মূল্যবোধ, উত্তম চরিত্র এবং আধুনিক শিক্ষার মাধ্যমে এক আদর্শ সুনাগরিক হিসেবে গড়ে তোলা। অভিজ্ঞ শিক্ষক মণ্ডলীর পরম মমতায় আমরা শিক্ষার্থীদের মেধা ও সুপ্ত প্রতিভার বিকাশে সততার সাথে দায়িত্ব পালন করে যাচ্ছি।"
               </p>
             </div>
           </div>
         </section>
 
-        {/* ফিচার ও নোটিশ গ্রিড */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginBottom: '40px' }}>
+        {/* নোটিশ ও বৈশিষ্ট্য */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginBottom: '32px' }}>
           
           {/* নোটিশ বোর্ড */}
           <div id="notice" className="card">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', borderBottom: '2px solid #f1f5f9', paddingBottom: '12px' }}>
-              <span style={{ fontSize: '20px' }}>📢</span>
-              <h3 style={{ margin: 0, fontSize: '18px', color: '#166534' }}>সর্বশেষ নোটিশ</h3>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', borderBottom: '2px solid #f1f5f9', paddingBottom: '10px' }}>
+              <h3 style={{ margin: 0, fontSize: '18px', color: '#166534', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                📌 নোটিশ বোর্ড
+              </h3>
             </div>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              <li style={{ padding: '12px 0', borderBottom: '1px dashed #e2e8f0' }}>
-                <span style={{ fontSize: '12px', background: '#dcfce7', color: '#15803d', padding: '2px 8px', borderRadius: '4px', fontWeight: '600' }}>১২ আগস্ট ২০২৬</span>
-                <p style={{ margin: '4px 0 0 0', fontSize: '14px', fontWeight: '500' }}>নতুন সেশনের ভর্তি আবেদন শুরু হয়েছে।</p>
-              </li>
-              <li style={{ padding: '12px 0', borderBottom: '1px dashed #e2e8f0' }}>
-                <span style={{ fontSize: '12px', background: '#fef3c7', color: '#b45309', padding: '2px 8px', borderRadius: '4px', fontWeight: '600' }}>১০ আগস্ট ২০২৬</span>
-                <p style={{ margin: '4px 0 0 0', fontSize: '14px', fontWeight: '500' }}>আগামী রবিবার সাময়িক পরীক্ষা সংক্রান্ত নির্দেশনা।</p>
-              </li>
-            </ul>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ padding: '12px', borderRadius: '10px', background: '#f8fafc', borderLeft: '4px solid #16a34a' }}>
+                <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold' }}>১২ আগস্ট ২০২৬</span>
+                <p style={{ margin: '4px 0 0 0', fontSize: '14px', fontWeight: '600' }}>২০২৬-২৭ শিক্ষাবর্ষের নতুন ভর্তি ফরম অনলাইন ও অফিসে পাওয়া যাচ্ছে।</p>
+              </div>
+              <div style={{ padding: '12px', borderRadius: '10px', background: '#f8fafc', borderLeft: '4px solid #eab308' }}>
+                <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold' }}>১৫ আগস্ট ২০২৬</span>
+                <p style={{ margin: '4px 0 0 0', fontSize: '14px', fontWeight: '600' }}>অভিভাবক সমাবেশ ও বার্ষিক মূল্যায়নী সভা সংক্রান্ত নোটিশ।</p>
+              </div>
+            </div>
           </div>
 
           {/* বৈশিষ্ট্যসমূহ */}
           <div className="card">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', borderBottom: '2px solid #f1f5f9', paddingBottom: '12px' }}>
-              <span style={{ fontSize: '20px' }}>✨</span>
-              <h3 style={{ margin: 0, fontSize: '18px', color: '#166534' }}>আমাদের বৈশিষ্ট্যসমূহ</h3>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ color: '#16a34a' }}>✔</span>
-                <span style={{ fontSize: '14px', color: '#334155' }}>অভিজ্ঞ ও প্রশিক্ষিত শিক্ষক মণ্ডলী</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ color: '#16a34a' }}>✔</span>
-                <span style={{ fontSize: '14px', color: '#334155' }}>মনোরম ও সিসিটিভি বেষ্টিত নিরাপদ ক্যাম্পাস</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ color: '#16a34a' }}>✔</span>
-                <span style={{ fontSize: '14px', color: '#334155' }}>হিফজুল কুরআনের বিশেষ যত্ন ও তদারকি</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ color: '#16a34a' }}>✔</span>
-                <span style={{ fontSize: '14px', color: '#334155' }}>কম্পিউটার শিক্ষা ও আধুনিক ল্যাব</span>
-              </div>
+            <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', color: '#166534', borderBottom: '2px solid #f1f5f9', paddingBottom: '10px' }}>
+              🌟 আমাদের বিশেষত্ব
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {['অভিজ্ঞ ও দ্বীনদার শিক্ষক মণ্ডলী', 'হিফজ ও বিশুদ্ধ ক্বিরাআত প্রশিক্ষণ', 'কম্পিউটার ও তথ্যপ্রযুক্তি শিক্ষা', 'নিরাপদ ও সিসিটিভি নিয়ন্ত্রিত ক্যাম্পাস', 'সুপরিসর ক্লাসরুম ও মনোরম পরিবেশ'].map((item, idx) => (
+                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', color: '#334155' }}>
+                  <span style={{ color: '#16a34a', fontWeight: 'bold' }}>✓</span>
+                  <span>{item}</span>
+                </div>
+              ))}
             </div>
           </div>
 
         </div>
 
         {/* অনলাইন ভর্তি ফর্ম */}
-        <section id="admission" className="card" style={{ maxWidth: '600px', margin: '0 auto', background: '#ffffff' }}>
-          <h3 style={{ fontSize: '20px', color: '#166534', textAlign: 'center', marginTop: 0, marginBottom: '8px' }}>অনলাইন ভর্তি আবেদন</h3>
-          <p style={{ textAlign: 'center', color: '#64748b', fontSize: '14px', marginBottom: '24px' }}>ফর্মটি পূরণ করে জমা দিন, আমরা খুব শীঘ্রই যোগাযোগ করবো</p>
-          
+        <section id="admission" className="card" style={{ maxWidth: '600px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <span className="badge">সহজ নিয়ম</span>
+            <h3 style={{ fontSize: '20px', color: '#166534', margin: '8px 0 4px 0' }}>অনলাইন ভর্তি আবেদন</h3>
+            <p style={{ color: '#64748b', fontSize: '13px', margin: 0 }}>আপনার তথ্য জমা দিন, আমরা অতি শীঘ্রই আপনার সাথে যোগাযোগ করবো</p>
+          </div>
+
           {submitted ? (
-            <div style={{ backgroundColor: '#dcfce7', border: '1px solid #86efac', color: '#14532d', padding: '16px', borderRadius: '8px', textAlign: 'center' }}>
-              <h4 style={{ margin: '0 0 4px 0' }}>আবেদন সফল হয়েছে!</h4>
-              <p style={{ margin: 0, fontSize: '14px' }}>আপনার ভর্তি আবেদন আমরা পেয়েছি। ধন্যবাদ!</p>
+            <div style={{ backgroundColor: '#dcfce7', border: '1px solid #86efac', color: '#14532d', padding: '20px', borderRadius: '12px', textAlign: 'center' }}>
+              <div style={{ fontSize: '30px', marginBottom: '8px' }}>🎉</div>
+              <h4 style={{ margin: '0 0 4px 0', fontSize: '18px' }}>আবেদন সফলভাবে গৃহীত হয়েছে!</h4>
+              <p style={{ margin: 0, fontSize: '14px' }}>ধন্যবাদ, আমরা দ্রুতই আপনার সাথে যোগাযোগ করবো।</p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '6px', color: '#334155' }}>শিক্ষার্থীর নাম</label>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '4px', color: '#334155' }}>শিক্ষার্থীর নাম</label>
                 <input 
                   type="text" 
                   required 
-                  placeholder="সম্পূর্ণ নাম লিখুন" 
+                  placeholder="শিক্ষার্থীর নাম লিখুন" 
                   value={formData.studentName}
                   onChange={(e) => setFormData({...formData, studentName: e.target.value})}
                   style={{ width: '100%', padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '14px', outline: 'none' }}
@@ -180,11 +188,11 @@ export default function App() {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '6px', color: '#334155' }}>মোবাইল নম্বর</label>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '4px', color: '#334155' }}>অভিভাবকের মোবাইল নম্বর</label>
                 <input 
                   type="tel" 
                   required 
-                  placeholder="০১৭XXXXXXXX" 
+                  placeholder="০১৫২১-৫৫৩০০৩" 
                   value={formData.phone}
                   onChange={(e) => setFormData({...formData, phone: e.target.value})}
                   style={{ width: '100%', padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '14px', outline: 'none' }}
@@ -192,14 +200,14 @@ export default function App() {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '6px', color: '#334155' }}>শ্রেণী নির্বাচন করুন</label>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '4px', color: '#334155' }}>কাঙ্ক্ষিত শ্রেণী</label>
                 <select 
                   required 
                   value={formData.class}
                   onChange={(e) => setFormData({...formData, class: e.target.value})}
                   style={{ width: '100%', padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '14px', outline: 'none', backgroundColor: 'white' }}
                 >
-                  <option value="">শ্রেণী বেছে নিন...</option>
+                  <option value="">শ্রেণী নির্বাচন করুন...</option>
                   <option value="play">প্লে শ্রেণী</option>
                   <option value="nursery">নার্সারি</option>
                   <option value="one">প্রথম শ্রেণী</option>
@@ -209,7 +217,7 @@ export default function App() {
               </div>
 
               <button type="submit" className="btn-primary" style={{ marginTop: '8px', width: '100%', fontSize: '16px' }}>
-                আবেদন জমা দিন
+                আবেদন ফর্ম জমা দিন
               </button>
             </form>
           )}
@@ -218,11 +226,14 @@ export default function App() {
       </main>
 
       {/* ফুটার */}
-      <footer style={{ backgroundColor: '#0f172a', color: '#94a3b8', padding: '40px 20px', marginTop: '60px' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
+      <footer id="contact" style={{ backgroundColor: '#0f172a', color: '#94a3b8', padding: '40px 20px 20px 20px', marginTop: '60px' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', textAlignment: 'center' }}>
           <h4 style={{ color: 'white', margin: '0 0 8px 0', fontSize: '18px' }}>চিলমারী প্রি ক্যাডেট মাদ্রাসা</h4>
-          <p style={{ fontSize: '14px', margin: '0 0 16px 0' }}>স্থান: চিলমারী, কুড়িগ্রাম</p>
-          <p style={{ fontSize: '12px', borderTop: '1px solid #334155', paddingTop: '16px', margin: 0 }}>
+          <p style={{ fontSize: '14px', margin: '0 0 12px 0' }}>ঠিকানা: চিলমারী, কুড়িগ্রাম</p>
+          <p style={{ fontSize: '14px', margin: '0 0 20px 0', color: '#38bdf8' }}>
+            মোবাইল: <a href="tel:+8801521553003" style={{ color: '#38bdf8', textDecoration: 'none', fontWeight: 'bold' }}>+880 1521-553003</a>
+          </p>
+          <p style={{ fontSize: '12px', borderTop: '1px solid #1e293b', paddingTop: '20px', margin: 0 }}>
             © {new Date().getFullYear()} চিলমারী প্রি ক্যাডেট মাদ্রাসা। সর্বস্বত্ব সংরক্ষিত।
           </p>
         </div>
