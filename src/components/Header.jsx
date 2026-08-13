@@ -1,40 +1,70 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
-export default function Header() {
+const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+
+  const navLinks = [
+    { name: 'হোম', path: '/' },
+    { name: 'অনলাইন ভর্তি', path: '/admission' },
+    { name: 'শিক্ষার্থী', path: '/students' },
+    { name: 'শিক্ষকবৃন্দ', path: '/teachers' },
+    { name: 'গ্যালারি', path: '/gallery' },
+    { name: 'যোগাযোগ', path: '/contact' },
+  ];
 
   return (
-    <header style={styles.header}>
-      <div style={styles.container}>
-        <Link to="/" style={styles.brand}>
-          🏫 চিলমারী প্রি ক্যাডেট মাদ্রাসা
+    <header style={{ backgroundColor: 'var(--primary)', color: '#fff', boxShadow: 'var(--shadow)', sticky: 'top', zIndex: 100 }}>
+      <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0' }}>
+        
+        {/* Branding */}
+        <Link to="/" style={{ textDecoration: 'none', color: '#fff', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ backgroundColor: 'var(--secondary)', color: 'var(--primary)', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '20px' }}>
+            চ
+          </div>
+          <div>
+            <h1 style={{ fontSize: '18px', fontWeight: '700', lineHeight: '1.2' }}>চিলমারী প্রি-ক্যাডেট মাদ্রাসা</h1>
+            <p style={{ fontSize: '11px', color: 'var(--secondary)', opacity: 0.9 }}>দ্বীনি ও আধুনিক শিক্ষার সমন্বিত প্রতিষ্ঠান</p>
+          </div>
         </Link>
 
-        <button style={styles.hamburger} onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? '✕' : '☰'}
+        {/* Mobile Toggle Button */}
+        <button 
+          onClick={() => setIsOpen(!isOpen)} 
+          style={{ background: 'none', border: 'none', color: '#fff', fontSize: '24px', cursor: 'pointer', display: 'none' }}
+          className="mobile-toggle"
+        >
+          ☰
         </button>
 
-        <nav style={{ ...styles.nav, display: isOpen ? 'flex' : 'none' }}>
-          <Link to="/" style={styles.link} onClick={() => setIsOpen(false)}>হোম</Link>
-          <Link to="/teachers" style={styles.link} onClick={() => setIsOpen(false)}>শিক্ষকমণ্ডলী</Link>
-          <Link to="/students" style={styles.link} onClick={() => setIsOpen(false)}>ছাত্র-ছাত্রী</Link>
-          <Link to="/gallery" style={styles.link} onClick={() => setIsOpen(false)}>গ্যালারি</Link>
-          <Link to="/admission" style={styles.link} onClick={() => setIsOpen(false)}>ভর্তি আবেদন</Link>
-          <Link to="/contact" style={styles.link} onClick={() => setIsOpen(false)}>যোগাযোগ</Link>
-          <Link to="/login" style={styles.loginBtn} onClick={() => setIsOpen(false)}>লগইন</Link>
+        {/* Desktop Navigation Links */}
+        <nav style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+          {navLinks.map((link) => {
+            const isActive = location.pathname === link.path;
+            return (
+              <Link
+                key={link.path}
+                to={link.path}
+                style={{
+                  color: isActive ? 'var(--primary)' : '#fff',
+                  backgroundColor: isActive ? 'var(--secondary)' : 'transparent',
+                  padding: '8px 14px',
+                  borderRadius: '6px',
+                  textDecoration: 'none',
+                  fontSize: '14px',
+                  fontWeight: isActive ? '700' : '500',
+                  transition: 'all 0.2s'
+                }}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
         </nav>
       </div>
     </header>
   );
-}
-
-const styles = {
-  header: { backgroundColor: '#0f392b', color: '#fff', padding: '12px 20px', position: 'sticky', top: 0, zIndex: 1000 },
-  container: { maxWidth: '1100px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' },
-  brand: { color: '#fff', fontSize: '1.2rem', fontWeight: 'bold', textDecoration: 'none' },
-  hamburger: { backgroundColor: 'transparent', color: '#fff', border: 'none', fontSize: '1.5rem', cursor: 'pointer' },
-  nav: { display: 'flex', flexDirection: 'column', width: '100%', marginTop: '15px', gap: '12px', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '15px' },
-  link: { color: '#e2e8f0', textDecoration: 'none', fontSize: '0.95rem', fontWeight: '500' },
-  loginBtn: { backgroundColor: '#10b981', color: '#fff', padding: '6px 14px', borderRadius: '6px', textDecoration: 'none', textAlign: 'center', fontWeight: 'bold', width: 'fit-content' }
 };
+
+export default Header;
