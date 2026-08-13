@@ -1,8 +1,10 @@
 import React from 'react';
 
 export default function Footer() {
-  const whatsappNumber = "8801521553003"; // আপনার হোয়াটসঅ্যাপ নম্বর
-  const facebookUrl = "https://facebook.com"; // আপনার ফেসবুক প্রোফাইল/পেজ লিংক
+  const whatsappNumber = "8801918568313"; 
+  const phoneNumber = "01918568313";
+  const facebookUrl = "https://www.facebook.com/firoj.gaming.chilmari"; 
+  const profileImage = "https://i.postimg.cc/667hGYDg/Screenshot-20260727-124259.jpg";
 
   return (
     <footer id="contact" style={{ backgroundColor: '#090d16', color: '#94a3b8', padding: '50px 20px 20px 20px', marginTop: '60px', borderTop: '2px solid #1e293b' }}>
@@ -18,26 +20,26 @@ export default function Footer() {
           text-align: center;
         }
         .dev-avatar {
-          width: 100px;
-          height: 100px;
+          width: 110px;
+          height: 110px;
           border-radius: 50%;
           object-fit: cover;
           border: 3px solid #10b981;
           box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
         }
         .dev-title {
-          font-size: 22px;
+          font-size: 20px;
           font-weight: 800;
           background: linear-gradient(135deg, #38bdf8, #34d399);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
-          margin: 10px 0 4px 0;
+          margin: 12px 0 4px 0;
         }
         .contact-btn {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          padding: 8px 16px;
+          padding: 9px 18px;
           border-radius: 8px;
           font-size: 13px;
           font-weight: 600;
@@ -60,11 +62,11 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* ডেভলপার তথ্য ও সার্ভিস কার্ড (Developer & Credit Section) */}
+        {/* ডেভলপার তথ্য ও সার্ভিস কার্ড */}
         <div className="dev-card">
           <div style={{ position: 'relative', display: 'inline-block' }}>
             <img 
-              src="https://i.postimg.cc/xd8py0DW/1786523361131.jpg" 
+              src={profileImage} 
               alt="Md Firoj Hasan" 
               className="dev-avatar"
             />
@@ -81,7 +83,7 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* যোগাযোগ ও সোশ্যাল আইকনসমূহ */}
+          {/* আপডেট করা কন্টাক্ট লিঙ্কস */}
           <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '16px' }}>
             <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer" className="contact-btn" style={{ backgroundColor: '#25D366', color: '#ffffff' }}>
               💬 WhatsApp
@@ -89,7 +91,7 @@ export default function Footer() {
             <a href={facebookUrl} target="_blank" rel="noopener noreferrer" className="contact-btn" style={{ backgroundColor: '#1877F2', color: '#ffffff' }}>
               🌐 Facebook
             </a>
-            <a href="tel:+8801521553003" className="contact-btn" style={{ backgroundColor: '#0284c7', color: '#ffffff' }}>
+            <a href={`tel:${phoneNumber}`} className="contact-btn" style={{ backgroundColor: '#0284c7', color: '#ffffff' }}>
               📞 Call Me
             </a>
           </div>
