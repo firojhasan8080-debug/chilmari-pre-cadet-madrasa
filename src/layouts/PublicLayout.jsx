@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from '../components/common/Header';
+import Footer from '../components/common/Footer';
 import ProtectedCredit from '../components/protected/ProtectedCredit';
 
 const PublicLayout = () => {
@@ -10,6 +11,7 @@ const PublicLayout = () => {
       <main className="flex-grow">
         <Outlet />
       </main>
+      <Footer />
       <ProtectedCredit />
     </div>
   );
