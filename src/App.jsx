@@ -1,9 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import DesignerCredit from './components/protected/DesignerCredit';
 import AdSlot from './components/protected/AdSlot';
+import Login from './pages/Login';
 
 export default function App() {
+  const [currentPath, setCurrentPath] = useState(window.location.pathname);
+
+  useEffect(() => {
+    const handleLocationChange = () => setCurrentPath(window.location.pathname);
+    window.addEventListener('popstate', handleLocationChange);
+    return () => window.removeEventListener('popstate', handleLocationChange);
+  }, []);
+
+  // যদি ইউজার /login পেজে যায়
+  if (currentPath === '/login') {
+    return <Login />;
+  }
+
+  // মূল ওয়েবসাইট (Home Page)
   return (
     <div>
       {/* Top Bar Info */}
@@ -23,7 +38,7 @@ export default function App() {
           <li><a href="#notice">নোটিশ বোর্ড</a></li>
           <li><a href="#contact">যোগাযোগ</a></li>
         </ul>
-        <a href="#login" onClick={() => alert("লগইন পোর্টাল তৈরির কাজ চলছে...")} className="btn-portal">
+        <a href="/login" className="btn-portal">
           পোর্টাল লগইন
         </a>
       </nav>
@@ -80,7 +95,7 @@ export default function App() {
         <p>© ২০২৬ চিলমারী প্রি ক্যাডেট মাদ্রাসা। সর্বস্বত্ব সংরক্ষিত।</p>
       </footer>
 
-      {/* Protect Protected Developer Credit */}
+      {/* Protected Developer Credit */}
       <DesignerCredit />
     </div>
   );
