@@ -91,7 +91,6 @@ export default function App() {
             <a href="#notice" className="nav-link" onClick={() => setMobileMenuOpen(false)}>নোটিশ বোর্ড</a>
             <a href="#contact" className="nav-link" onClick={() => setMobileMenuOpen(false)}>যোগাযোগ</a>
             
-            {/* আপনার চাওয়া নতুন অপশনগুলো (target="_blank" দেওয়া হয়েছে নতুন পেজে ওপেন হওয়ার জন্য) */}
             <a href="/teachers" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>শিক্ষক বিন্দু</a>
             <a href="/students" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>ছাএ ছাএী</a>
             <a href="/gallery" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>গ্যালারী</a>
@@ -194,70 +193,6 @@ export default function App() {
           </div>
 
         </div>
-
-        {/* অনলাইন ভর্তি ফর্ম */}
-        <section id="admission" className="card" style={{ maxWidth: '600px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-            <span className="badge">সহজ নিয়ম</span>
-            <h3 style={{ fontSize: '20px', color: '#166534', margin: '8px 0 4px 0' }}>অনলাইন ভর্তি আবেদন</h3>
-            <p style={{ color: '#64748b', fontSize: '13px', margin: 0 }}>আপনার তথ্য জমা দিন, আমরা অতি শীঘ্রই আপনার সাথে যোগাযোগ করবো</p>
-          </div>
-
-          {submitted ? (
-            <div style={{ backgroundColor: '#dcfce7', border: '1px solid #86efac', color: '#14532d', padding: '20px', borderRadius: '12px', textAlign: 'center' }}>
-              <div style={{ fontSize: '30px', marginBottom: '8px' }}>🎉</div>
-              <h4 style={{ margin: '0 0 4px 0', fontSize: '18px' }}>আবেদন সফলভাবে গৃহীত হয়েছে!</h4>
-              <p style={{ margin: 0, fontSize: '14px' }}>ধন্যবাদ, আমরা দ্রুতই আপনার সাথে যোগাযোগ করবো।</p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '4px', color: '#334155' }}>শিক্ষার্থীর নাম</label>
-                <input 
-                  type="text" 
-                  required 
-                  placeholder="শিক্ষার্থীর নাম লিখুন" 
-                  value={formData.studentName}
-                  onChange={(e) => setFormData({...formData, studentName: e.target.value})}
-                  style={{ width: '100%', padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '14px', outline: 'none' }}
-                />
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '4px', color: '#334155' }}>অভিভাবকের মোবাইল নম্বর</label>
-                <input 
-                  type="tel" 
-                  required 
-                  placeholder="০১৫২১-৫৫৩০০৩" 
-                  value={formData.phone}
-                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                  style={{ width: '100%', padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '14px', outline: 'none' }}
-                />
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '4px', color: '#334155' }}>কাঙ্ক্ষিত শ্রেণী</label>
-                <select 
-                  required 
-                  value={formData.class}
-                  onChange={(e) => setFormData({...formData, class: e.target.value})}
-                  style={{ width: '100%', padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '14px', outline: 'none', backgroundColor: 'white' }}
-                >
-                  <option value="">শ্রেণী নির্বাচন করুন...</option>
-                  <option value="play">প্লে শ্রেণী</option>
-                  <option value="nursery">নার্সারি</option>
-                  <option value="one">প্রথম শ্রেণী</option>
-                  <option value="two">দ্বিতীয় শ্রেণী</option>
-                  <option value="hifz">হিফজ বিভাগ</option>
-                </select>
-              </div>
-
-              <button type="submit" className="btn-primary" style={{ marginTop: '8px', width: '100%', fontSize: '16px' }}>
-                আবেদন ফর্ম জমা দিন
-              </button>
-            </form>
-          )}
-        </section>
 
       </main>
 
