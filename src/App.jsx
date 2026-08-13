@@ -90,6 +90,15 @@ export default function App() {
             <a href="#about" className="nav-link" onClick={() => setMobileMenuOpen(false)}>প্রধান শিক্ষকের বাণী</a>
             <a href="#notice" className="nav-link" onClick={() => setMobileMenuOpen(false)}>নোটিশ বোর্ড</a>
             <a href="#contact" className="nav-link" onClick={() => setMobileMenuOpen(false)}>যোগাযোগ</a>
+            
+            {/* আপনার চাওয়া নতুন অপশনগুলো (target="_blank" দেওয়া হয়েছে নতুন পেজে ওপেন হওয়ার জন্য) */}
+            <a href="/teachers" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>শিক্ষক বিন্দু</a>
+            <a href="/students" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>ছাএ ছাএী</a>
+            <a href="/gallery" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>গ্যালারী</a>
+            <a href="/admin" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Admin</a>
+            <a href="/teacher-permission" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Teacher Permission Dashboard</a>
+            <a href="/super-admin" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Super Admin</a>
+            
             <a href="#admission" className="btn-primary" style={{ textAlign: 'center' }} onClick={() => setMobileMenuOpen(false)}>অনলাইন ভর্তি</a>
           </div>
         )}
