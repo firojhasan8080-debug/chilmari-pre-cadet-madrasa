@@ -3,6 +3,7 @@ import './App.css';
 import DesignerCredit from './components/protected/DesignerCredit';
 import AdSlot from './components/protected/AdSlot';
 import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
 
 export default function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
@@ -13,12 +14,17 @@ export default function App() {
     return () => window.removeEventListener('popstate', handleLocationChange);
   }, []);
 
-  // যদি ইউজার /login পেজে যায়
+  // ১. যদি ইউজার /login পেজে যায়
   if (currentPath === '/login') {
     return <Login />;
   }
 
-  // মূল ওয়েবসাইট (Home Page)
+  // ২. যদি ইউজার /dashboard পেজে যায়
+  if (currentPath === '/dashboard') {
+    return <Dashboard />;
+  }
+
+  // ৩. মূল ওয়েবসাইট (Home Page)
   return (
     <div>
       {/* Top Bar Info */}
