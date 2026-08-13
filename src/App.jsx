@@ -13,6 +13,7 @@ import Teachers from './pages/Teachers';
 import Contact from './pages/Contact';
 import Students from './pages/Students';
 import Gallery from './pages/Gallery';
+import Admission from './pages/Admission';
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
             <Route path="/teachers" element={<Teachers />} />
             <Route path="/students" element={<Students />} />
             <Route path="/gallery" element={<Gallery />} />
+            <Route path="/admission" element={<Admission />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />
             
