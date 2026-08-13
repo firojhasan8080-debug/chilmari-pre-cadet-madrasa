@@ -1,45 +1,59 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-export default function Contact() {
+// Existing Components & Pages
+import Header from './components/Header';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import ProtectedRoute from './components/protected/ProtectedRoute';
+
+// New Pages Added
+import Teachers from './pages/Teachers';
+import Contact from './pages/Contact';
+import Students from './pages/Students';
+
+export default function App() {
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <div style={styles.imgWrapper}>
-          <img 
-            src="https://i.postimg.cc/gjktXPpH/1786523361131.jpg" 
-            alt="প্রধান শিক্ষক ও পরিচালক" 
-            style={styles.image} 
-          />
-        </div>
+    <Router>
+      <div style={styles.appContainer}>
+        {/* Top Header & Hamburger Navigation */}
+        <Header />
 
-        <h2 style={styles.title}>প্রধান শিক্ষক ও পরিচালক</h2>
-        <p style={styles.institution}>চিলমারী প্রি ক্যাডেট মাদ্রাসা</p>
-
-        <div style={styles.phoneBox}>
-          <p style={styles.label}>যোগাযোগের মোবাইল নম্বর:</p>
-          <a href="tel:+8801521553003" style={styles.phoneLink}>
-            📞 +8801521-553003
-          </a>
-        </div>
-
-        <div style={styles.addressBox}>
-          <p style={{ fontWeight: 'bold', color: '#0f392b', marginBottom: '5px' }}>📍 ঠিকানা:</p>
-          <p style={{ color: '#475569', fontSize: '0.9rem' }}>চিলমারী, কুড়িগ্রাম, বাংলাদেশ</p>
-        </div>
+        {/* Main Content Pages */}
+        <main style={styles.mainContent}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/teachers" element={<Teachers />} />
+            <Route path="/students" element={<Students />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/login" element={<Login />} />
+            
+            {/* Admin / Teacher Protected Dashboard */}
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } 
+            />
+          </Routes>
+        </main>
       </div>
-    </div>
+    </Router>
   );
 }
 
 const styles = {
-  container: { maxWidth: '600px', margin: '40px auto', padding: '0 15px', minHeight: '70vh' },
-  card: { backgroundColor: '#fff', borderRadius: '16px', padding: '30px 20px', textAlign: 'center', boxShadow: '0 10px 25px rgba(0,0,0,0.08)', border: '1px solid #e2e8f0' },
-  imgWrapper: { width: '180px', height: '180px', margin: '0 auto 20px', borderRadius: '50%', overflow: 'hidden', border: '4px solid #0f392b', boxShadow: '0 6px 15px rgba(15,57,43,0.2)' },
-  image: { width: '100%', height: '100%', objectFit: 'cover' },
-  title: { fontSize: '1.4rem', color: '#0f392b', fontWeight: 'bold', margin: '10px 0 5px' },
-  institution: { fontSize: '0.95rem', color: '#64748b', marginBottom: '25px' },
-  phoneBox: { backgroundColor: '#f0fdf4', padding: '15px', borderRadius: '10px', border: '1px solid #bbf7d0', marginBottom: '20px' },
-  label: { fontSize: '0.85rem', color: '#166534', marginBottom: '5px' },
-  phoneLink: { fontSize: '1.2rem', color: '#0f392b', fontWeight: 'bold', textDecoration: 'none' },
-  addressBox: { backgroundColor: '#f8fafc', padding: '12px', borderRadius: '8px' }
+  appContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100vh',
+    fontFamily: "'Anek Bangla', 'Segoe UI', sans-serif",
+    backgroundColor: '#f8fafc'
+  },
+  mainContent: {
+    flex: 1
+  }
 };
