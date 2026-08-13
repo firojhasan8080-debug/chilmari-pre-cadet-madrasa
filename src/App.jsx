@@ -1,10 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// Header Navigation Component
-import Header from './components/Header';
+// Header Navigation
+import Header from './components/protected/Header';
 
-// Pages
+// All Pages
 import Home from './pages/Home';
 import Teachers from './pages/Teachers';
 import Students from './pages/Students';
@@ -13,16 +13,15 @@ import Admission from './pages/Admission';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import ProtectedRoute from './components/protected/ProtectedRoute';
 
 export default function App() {
   return (
     <Router>
       <div style={styles.appContainer}>
-        {/* Top Header Navigation */}
+        {/* Top Header */}
         <Header />
 
-        {/* Main Pages */}
+        {/* Main Content Pages */}
         <main style={styles.mainContent}>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -32,16 +31,7 @@ export default function App() {
             <Route path="/admission" element={<Admission />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />
-            
-            {/* Protected Dashboard */}
-            <Route 
-              path="/dashboard" 
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              } 
-            />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </main>
       </div>
