@@ -1,108 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import './App.css';
-import DesignerCredit from './components/protected/DesignerCredit';
-import AdSlot from './components/protected/AdSlot';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
+import React from 'react';
 
-export default function App() {
-  const [currentPath, setCurrentPath] = useState(window.location.pathname);
-
-  useEffect(() => {
-    const handleLocationChange = () => setCurrentPath(window.location.pathname);
-    window.addEventListener('popstate', handleLocationChange);
-    return () => window.removeEventListener('popstate', handleLocationChange);
-  }, []);
-
-  // ১. যদি ইউজার /login পেজে যায়
-  if (currentPath === '/login') {
-    return <Login />;
-  }
-
-  // ২. যদি ইউজার /dashboard পেজে যায়
-  if (currentPath === '/dashboard') {
-    return <Dashboard />;
-  }
-
-  // ৩. মূল ওয়েবসাইট (Home Page)
+export default function Contact() {
   return (
-    <div>
-      {/* Top Bar Info */}
-      <div className="top-bar">
-        <span>📍 চিলমারী, কুড়িগ্রাম | 📞 যোগাযোগ: ০১৭০০-০০০০০</span>
-        <span>ইআইআইএন (EIIN): XXXXXX</span>
+    <div style={styles.container}>
+      <div style={styles.card}>
+        <div style={styles.imgWrapper}>
+          <img 
+            src="https://i.postimg.cc/gjktXPpH/1786523361131.jpg" 
+            alt="প্রধান শিক্ষক ও পরিচালক" 
+            style={styles.image} 
+          />
+        </div>
+
+        <h2 style={styles.title}>প্রধান শিক্ষক ও পরিচালক</h2>
+        <p style={styles.institution}>চিলমারী প্রি ক্যাডেট মাদ্রাসা</p>
+
+        <div style={styles.phoneBox}>
+          <p style={styles.label}>যোগাযোগের মোবাইল নম্বর:</p>
+          <a href="tel:+8801521553003" style={styles.phoneLink}>
+            📞 +8801521-553003
+          </a>
+        </div>
+
+        <div style={styles.addressBox}>
+          <p style={{ fontWeight: 'bold', color: '#0f392b', marginBottom: '5px' }}>📍 ঠিকানা:</p>
+          <p style={{ color: '#475569', fontSize: '0.9rem' }}>চিলমারী, কুড়িগ্রাম, বাংলাদেশ</p>
+        </div>
       </div>
-
-      {/* Navigation */}
-      <nav className="navbar">
-        <a href="/" className="brand-logo">
-          🕌 চিলমারী প্রি ক্যাডেট মাদ্রাসা
-        </a>
-        <ul className="nav-links">
-          <li><a href="#about">পরিচিতি</a></li>
-          <li><a href="#features">বৈশিষ্ট্যসমূহ</a></li>
-          <li><a href="#notice">নোটিশ বোর্ড</a></li>
-          <li><a href="#contact">যোগাযোগ</a></li>
-        </ul>
-        <a href="/login" className="btn-portal">
-          পোর্টাল লগইন
-        </a>
-      </nav>
-
-      {/* Hero Header */}
-      <header className="hero">
-        <h1>দীনি ও আধুনিক শিক্ষার এক অপূর্ব সমন্বয়</h1>
-        <p>
-          আপনার সন্তানকে নৈতিক শিক্ষা, হিফজুল কুরআন ও ক্যাডেট স্ট্যান্ডার্ড সাধারণ শিক্ষায় সুশিক্ষিত করে গড়ে তুলতে আমরা অঙ্গীকারবদ্ধ।
-        </p>
-        <div className="hero-btns">
-          <a href="#admission" className="btn-primary">অনলাইন ভর্তি তথ্য</a>
-          <a href="#notice" className="btn-outline">সাম্প্রতিক নোটিশ</a>
-        </div>
-      </header>
-
-      {/* Ad Banner (Top Slot) */}
-      <div style={{ padding: '0 5%' }}>
-        <AdSlot slotName="home_top_banner" />
-      </div>
-
-      {/* Features Section */}
-      <section id="features" className="section">
-        <h2 className="section-title">আমাদের বিশেষত্বসমূহ</h2>
-        <div className="grid-3">
-          <div className="card">
-            <h3>📖 ক্যাডেট কারিকুলাম</h3>
-            <p>সাধারণ শিক্ষার পাশাপাশি ক্যাডেট কোচিংয়ের বিশেষ গাইডলাইন ও আন্তর্জাতিক মানের কারিকুলাম।</p>
-          </div>
-          <div className="card">
-            <h3>🕌 সহীহ কুরআন ও হিফজ</h3>
-            <p>অভিজ্ঞ আন্তর্জাতিক মানের ক্বারী ও হাফেজ দ্বারা তাজবীদভিত্তিক সহীহ কুরআন শিক্ষা প্রদান।</p>
-          </div>
-          <div className="card">
-            <h3>💻 আধুনিক আইসিটি শিক্ষা</h3>
-            <p>ছোটবেলা থেকেই শিশুদের প্রযুক্তিমনস্ক করতে কম্পিউটার ও মৌলিক কোডিং ধারণার পাঠদান।</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Notice Board Section */}
-      <section id="notice" className="section" style={{ background: '#f1f5f9' }}>
-        <h2 className="section-title">জরুরী নোটিশ বোর্ড</h2>
-        <div className="card" style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <p style={{ color: '#ef4444', fontWeight: 'bold' }}>📌 ভর্তি চলছে - ২০২৬ শিক্ষাবর্ষ</p>
-          <p style={{ marginTop: '8px' }}>
-            প্লে থেকে অষ্টম শ্রেণী পর্যন্ত সীমিত আসনে নতুন ছাত্র-ছাত্রী ভর্তি চলছে। বিস্তারিত জানতে অফিসে যোগাযোগ করুন।
-          </p>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer>
-        <p>© ২০২৬ চিলমারী প্রি ক্যাডেট মাদ্রাসা। সর্বস্বত্ব সংরক্ষিত।</p>
-      </footer>
-
-      {/* Protected Developer Credit */}
-      <DesignerCredit />
     </div>
   );
 }
+
+const styles = {
+  container: { maxWidth: '600px', margin: '40px auto', padding: '0 15px', minHeight: '70vh' },
+  card: { backgroundColor: '#fff', borderRadius: '16px', padding: '30px 20px', textAlign: 'center', boxShadow: '0 10px 25px rgba(0,0,0,0.08)', border: '1px solid #e2e8f0' },
+  imgWrapper: { width: '180px', height: '180px', margin: '0 auto 20px', borderRadius: '50%', overflow: 'hidden', border: '4px solid #0f392b', boxShadow: '0 6px 15px rgba(15,57,43,0.2)' },
+  image: { width: '100%', height: '100%', objectFit: 'cover' },
+  title: { fontSize: '1.4rem', color: '#0f392b', fontWeight: 'bold', margin: '10px 0 5px' },
+  institution: { fontSize: '0.95rem', color: '#64748b', marginBottom: '25px' },
+  phoneBox: { backgroundColor: '#f0fdf4', padding: '15px', borderRadius: '10px', border: '1px solid #bbf7d0', marginBottom: '20px' },
+  label: { fontSize: '0.85rem', color: '#166534', marginBottom: '5px' },
+  phoneLink: { fontSize: '1.2rem', color: '#0f392b', fontWeight: 'bold', textDecoration: 'none' },
+  addressBox: { backgroundColor: '#f8fafc', padding: '12px', borderRadius: '8px' }
+};
