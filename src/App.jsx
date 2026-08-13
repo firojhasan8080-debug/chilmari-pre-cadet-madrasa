@@ -12,6 +12,7 @@ import ProtectedRoute from './components/protected/ProtectedRoute';
 import Teachers from './pages/Teachers';
 import Contact from './pages/Contact';
 import Students from './pages/Students';
+import Gallery from './pages/Gallery';
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/teachers" element={<Teachers />} />
             <Route path="/students" element={<Students />} />
+            <Route path="/gallery" element={<Gallery />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />
             
