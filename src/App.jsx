@@ -1,29 +1,28 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
-import { useAuth } from '../context/AuthContext'; // AuthContext যুক্ত করা হলো
+import { useAuth } from '../context/AuthContext';
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
-  const { profile } = useAuth(); // ইউজারের প্রোফাইল ডাটা কল করা হলো
+  const { profile } = useAuth();
 
   const whatsappNumber = "8801918568313";
 
   return (
     <div style={{ fontFamily: "'Hind Siliguri', 'Segoe UI', sans-serif", backgroundColor: '#f8fafc', color: '#0f172a', minHeight: '100vh', margin: 0, padding: 0, position: 'relative' }}>
-      {/* গ্লোবাল এবং স্টাইলিং রুলস */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
         * { box-sizing: border-box; scroll-behavior: smooth; }
         .nav-link { color: #334155; text-decoration: none; font-weight: 600; transition: color 0.2s; display: block; }
         .nav-link:hover { color: #15803d; }
-        .btn-primary { background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+        .btn-primary { background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; font-size: 14px; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(22, 163, 74, 0.35); }
-        .card { background: #ffffff; border-radius: 18px; padding: 24px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01); border: 1px solid #e2e8f0; }
+        .btn-login { background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; padding: 8px 16px; border-radius: 10px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; transition: background 0.2s; }
+        .btn-login:hover { background: #e2e8f0; }
+        .card { background: #ffffff; border-radius: 18px; padding: 24px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0; }
         .badge { background: #dcfce7; color: #15803d; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; display: inline-block; }
         
-        /* ভাসমান লাইভ চ্যাট বাটন */
         .live-chat-btn {
           position: fixed;
           bottom: 25px;
@@ -40,11 +39,6 @@ export default function Home() {
           font-weight: bold;
           font-size: 14px;
           z-index: 1000;
-          transition: all 0.3s ease;
-        }
-        .live-chat-btn:hover {
-          transform: scale(1.05);
-          box-shadow: 0 12px 25px rgba(37, 211, 102, 0.6);
         }
       `}</style>
 
@@ -52,32 +46,35 @@ export default function Home() {
       <div style={{ backgroundColor: '#14532d', color: '#f0fdf4', padding: '8px 20px', fontSize: '13px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
           <div>📍 চিলমারী, কুড়িগ্রাম, বাংলাদেশ</div>
-          <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-            <span>📞 যোগাযোগ: <a href="tel:+8801521553003" style={{ color: '#ffffff', fontWeight: 'bold', textDecoration: 'none' }}>+880 1521-553003</a></span>
-          </div>
+          <div>📞 যোগাযোগ: <a href="tel:+8801521553003" style={{ color: '#ffffff', fontWeight: 'bold', textDecoration: 'none' }}>+880 1521-553003</a></div>
         </div>
       </div>
 
       {/* নেভিগেশন বার */}
       <nav style={{ backgroundColor: '#ffffff', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '14px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '12px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: 'linear-gradient(135deg, #16a34a, #15803d)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '22px', boxShadow: '0 4px 10px rgba(22, 163, 74, 0.3)' }}>
+            <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'linear-gradient(135deg, #16a34a, #15803d)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '20px' }}>
               চ
             </div>
             <div>
-              <h1 style={{ fontSize: '18px', fontWeight: '800', color: '#14532d', margin: 0, lineHeight: 1.2 }}>চিলমারী প্রি ক্যাডেট মাদ্রাসা</h1>
-              <p style={{ fontSize: '11px', color: '#64748b', margin: 0, fontStyle: 'italic' }}>দ্বীন ও আধুনিক শিক্ষার অপূর্ব মেলবন্ধন</p>
+              <h1 style={{ fontSize: '16px', fontWeight: '800', color: '#14532d', margin: 0, lineHeight: 1.2 }}>চিলমারী প্রি ক্যাডেট মাদ্রাসা</h1>
+              <p style={{ fontSize: '10px', color: '#64748b', margin: 0, fontStyle: 'italic' }}>দ্বীন ও আধুনিক শিক্ষার মেলবন্ধন</p>
             </div>
           </div>
 
-          {/* মোবাইল মেনু টগল বাটন */}
-          <button 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
-            style={{ background: '#f1f5f9', border: 'none', padding: '8px 12px', borderRadius: '8px', fontSize: '20px', cursor: 'pointer', color: '#1e293b' }}
-          >
-            {mobileMenuOpen ? '✕' : '☰'}
-          </button>
+          {/* ডানপাশের সেকশন: লগইন বাটন ও মেনু টগল */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Link to="/login" className="btn-login">
+              🔑 লগইন
+            </Link>
+            <button 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
+              style={{ background: '#f1f5f9', border: 'none', padding: '8px 12px', borderRadius: '8px', fontSize: '18px', cursor: 'pointer', color: '#1e293b' }}
+            >
+              {mobileMenuOpen ? '✕' : '☰'}
+            </button>
+          </div>
         </div>
 
         {/* মোবাইল ড্রপডাউন মেনু */}
@@ -92,7 +89,6 @@ export default function Home() {
             <Link to="/students" className="nav-link" onClick={() => setMobileMenuOpen(false)}>ছাত্র-ছাত্রী</Link>
             <Link to="/gallery" className="nav-link" onClick={() => setMobileMenuOpen(false)}>গ্যালারী</Link>
             
-            {/* ডাইনামিক এডমিন প্যানেল লিংকস */}
             {(profile?.role === 'admin' || profile?.role === 'super_admin') && (
               <Link to="/admin" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Admin</Link>
             )}
@@ -106,9 +102,6 @@ export default function Home() {
             )}
             
             <Link to="/admission" className="btn-primary" style={{ textAlign: 'center' }} onClick={() => setMobileMenuOpen(false)}>অনলাইন ভর্তি</Link>
-            
-            {/* লগইন অপশন যুক্ত করা হলো */}
-            <Link to="/login" className="nav-link" style={{ textAlign: 'center', backgroundColor: '#f1f5f9', padding: '10px', borderRadius: '8px', color: '#1e293b' }} onClick={() => setMobileMenuOpen(false)}>🔑 লগইন করুন</Link>
           </div>
         )}
       </nav>
