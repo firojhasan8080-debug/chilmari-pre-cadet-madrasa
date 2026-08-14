@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import Footer from './components/Footer';
+import { useAuth } from './context/AuthContext'; // AuthContext যুক্ত করা হলো
 
 export default function App() {
   const [formData, setFormData] = useState({ studentName: '', phone: '', class: '' });
   const [submitted, setSubmitted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  const { profile } = useAuth(); // ইউজারের প্রোফাইল ডাটা কল করা হলো
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -94,9 +97,19 @@ export default function App() {
             <a href="/teachers" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>শিক্ষক বিন্দু</a>
             <a href="/students" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>ছাএ ছাএী</a>
             <a href="/gallery" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>গ্যালারী</a>
-            <a href="/admin" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Admin</a>
-            <a href="/teacher-permission" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Teacher Permission Dashboard</a>
-            <a href="/super-admin" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Super Admin</a>
+            
+            {/* ডাইনামিক এডমিন প্যানেল লিংকস */}
+            {(profile?.role === 'admin' || profile?.role === 'super_admin') && (
+              <a href="/admin" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Admin</a>
+            )}
+            
+            {(profile?.role === 'teacher' || profile?.role === 'admin' || profile?.role === 'super_admin') && (
+              <a href="/teacher-permission" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Teacher Permission Dashboard</a>
+            )}
+            
+            {profile?.role === 'super_admin' && (
+              <a href="/super-admin" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Super Admin</a>
+            )}
             
             <a href="#admission" className="btn-primary" style={{ textAlign: 'center' }} onClick={() => setMobileMenuOpen(false)}>অনলাইন ভর্তি</a>
           </div>
