@@ -1,83 +1,67 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '../config/supabaseClient';
+import { supabase } from '../supabaseClient';
 
-const AuthContext = createContext();
+const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
-  const [teacherPermissions, setTeacherPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getInitialSession = async () => {
+    // বর্তমান সেশন চেক করা
+    const fetchSession = async () => {
+      setLoading(true);
       const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user ?? null);
       if (session?.user) {
-        setUser(session.user);
-        await fetchUserProfile(session.user.id);
+        await fetchProfile(session.user.id);
       }
       setLoading(false);
     };
 
-    getInitialSession();
+    fetchSession();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+    // অথেন্টিকেশন স্টেট পরিবর্তন হ্যান্ডেল করা
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      setUser(session?.user ?? null);
       if (session?.user) {
-        setUser(session.user);
-        await fetchUserProfile(session.user.id);
+        await fetchProfile(session.user.id);
       } else {
-        setUser(null);
         setProfile(null);
-        setTeacherPermissions([]);
       }
       setLoading(false);
     });
 
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
-  const fetchUserProfile = async (userId) => {
+  // প্রোফাইল ও রোল ডাটা ফেচ করা
+  const fetchProfile = async (userId) => {
     try {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .single();
-
+      
       if (!error && data) {
         setProfile(data);
-        if (data.role === 'TEACHER') {
-          fetchTeacherPermissions(userId);
-        }
       }
     } catch (err) {
-      console.error(err);
+      console.error('Error fetching profile:', err);
     }
   };
 
-  const fetchTeacherPermissions = async (teacherId) => {
-    const { data } = await supabase
-      .from('teacher_permissions')
-      .select('permission_key')
-      .eq('teacher_id', teacherId);
-
-    if (data) {
-      setTeacherPermissions(data.map(p => p.permission_key));
-    }
+  // সাইন আউট ফাংশন
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setProfile(null);
   };
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      profile,
-      teacherPermissions,
-      isSuperAdmin: profile?.role === 'SUPER_ADMIN',
-      isAdmin: profile?.role === 'ADMIN' || profile?.role === 'SUPER_ADMIN',
-      isTeacher: profile?.role === 'TEACHER',
-      loading
-    }}>
+    <AuthContext.Provider value={{ user, profile, loading, signOut }}>
       {children}
     </AuthContext.Provider>
   );
