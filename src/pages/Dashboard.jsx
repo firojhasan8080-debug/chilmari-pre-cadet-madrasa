@@ -26,7 +26,6 @@ export default function Dashboard() {
 
   // ২. নোটিশ ডাটা আনা
   const fetchNotices = async () => {
-    // নোটিশ টেবিল না থাকলে হ্যান্ডেল করবে
     const { data } = await supabase.from('notices').select('*').order('created_at', { ascending: false });
     if (data) setNotices(data);
   };
@@ -85,7 +84,7 @@ export default function Dashboard() {
       <div style={styles.sidebar}>
         <h2>🏫 কন্ট্রোল প্যানেল</h2>
         <div style={styles.userInfo}>
-          <p style={{ fontWeight: 'bold' }}>{profile?.full_name || 'ইউজার'}</p>
+          <p style={{ fontWeight: 'bold' }}>{profile?.full_name || profile?.name || 'ইউজার'}</p>
           <span style={styles.roleBadge}>{profile?.role}</span>
         </div>
 
@@ -108,7 +107,7 @@ export default function Dashboard() {
         {/* Tab 1: Overview */}
         {activeTab === 'overview' && (
           <div>
-            <h1>স্বাগতম, {profile?.full_name}! 👋</h1>
+            <h1>স্বাগতম, {profile?.full_name || profile?.name || 'ব্যবহারকারী'}! 👋</h1>
             <p style={{ margin: '10px 0 20px' }}>আপনি আপনার রোল অনুযায়ী ড্যাশবোর্ড কন্ট্রোল করতে পারছেন।</p>
             <div style={styles.grid}>
               <div style={styles.card}>
@@ -126,7 +125,7 @@ export default function Dashboard() {
         {/* Tab 2: User Role & Permission Control (Super Admin Only) */}
         {activeTab === 'users' && isSuperAdmin && (
           <div>
-            <h2>👥 ইউজার পারমিশন ও রোল ম্যানেজমেন্ট (A to Z Control)</h2>
+            <h2>👥 ইউজার পারমিশন ও রোল ম্যানেজমেন্ট</h2>
             <p style={{ marginBottom: '15px' }}>কাকে কি পাওয়ার দেবেন এখান থেকে কন্ট্রোল করুন:</p>
             
             <table style={styles.table}>
@@ -141,7 +140,7 @@ export default function Dashboard() {
               <tbody>
                 {users.map(u => (
                   <tr key={u.id} style={{ borderBottom: '1px solid #ccc' }}>
-                    <td style={styles.td}>{u.full_name || 'N/A'}</td>
+                    <td style={styles.td}>{u.full_name || u.name || 'N/A'}</td>
                     <td style={styles.td}>{u.email || 'N/A'}</td>
                     <td style={styles.td}><strong>{u.role}</strong></td>
                     <td style={styles.td}>
@@ -150,10 +149,10 @@ export default function Dashboard() {
                         onChange={(e) => handleRoleChange(u.id, e.target.value)}
                         style={styles.select}
                       >
-                        <option value="USER">General User</option>
-                        <option value="TEACHER">Teacher</option>
-                        <option value="ADMIN">Admin</option>
-                        <option value="SUPER_ADMIN">Super Admin</option>
+                        <option value="user">USER</option>
+                        <option value="teacher">TEACHER</option>
+                        <option value="admin">ADMIN</option>
+                        <option value="super_admin">SUPER_ADMIN</option>
                       </select>
                     </td>
                   </tr>
