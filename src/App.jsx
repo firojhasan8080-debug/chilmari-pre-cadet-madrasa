@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import Footer from './components/Footer';
-import { useAuth } from './context/AuthContext'; // AuthContext যুক্ত করা হলো
+import Footer from '../components/Footer';
+import { useAuth } from '../context/AuthContext'; // AuthContext যুক্ত করা হলো
 
-export default function App() {
+export default function Home() {
   const [formData, setFormData] = useState({ studentName: '', phone: '', class: '' });
   const [submitted, setSubmitted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -94,24 +94,24 @@ export default function App() {
             <a href="#notice" className="nav-link" onClick={() => setMobileMenuOpen(false)}>নোটিশ বোর্ড</a>
             <a href="#contact" className="nav-link" onClick={() => setMobileMenuOpen(false)}>যোগাযোগ</a>
             
-            <a href="/teachers" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>শিক্ষক বিন্দু</a>
-            <a href="/students" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>ছাএ ছাএী</a>
-            <a href="/gallery" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>গ্যালারী</a>
+            <a href="/teachers" className="nav-link" onClick={() => setMobileMenuOpen(false)}>শিক্ষক বিন্দু</a>
+            <a href="/students" className="nav-link" onClick={() => setMobileMenuOpen(false)}>ছাএ ছাএী</a>
+            <a href="/gallery" className="nav-link" onClick={() => setMobileMenuOpen(false)}>গ্যালারী</a>
             
             {/* ডাইনামিক এডমিন প্যানেল লিংকস */}
             {(profile?.role === 'admin' || profile?.role === 'super_admin') && (
-              <a href="/admin" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Admin</a>
+              <a href="/admin" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Admin</a>
             )}
             
             {(profile?.role === 'teacher' || profile?.role === 'admin' || profile?.role === 'super_admin') && (
-              <a href="/teacher-permission" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Teacher Permission Dashboard</a>
+              <a href="/teacher-permission" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Teacher Permission Dashboard</a>
             )}
             
             {profile?.role === 'super_admin' && (
-              <a href="/super-admin" target="_blank" rel="noopener noreferrer" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Super Admin</a>
+              <a href="/super-admin" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Super Admin</a>
             )}
             
-            <a href="#admission" className="btn-primary" style={{ textAlign: 'center' }} onClick={() => setMobileMenuOpen(false)}>অনলাইন ভর্তি</a>
+            <a href="/admission" className="btn-primary" style={{ textAlign: 'center' }} onClick={() => setMobileMenuOpen(false)}>অনলাইন ভর্তি</a>
           </div>
         )}
       </nav>
@@ -129,7 +129,7 @@ export default function App() {
             আমরা দিচ্ছি আধুনিক ক্বওমী ও জেনারেল শিক্ষা ব্যবস্থার এক অনন্য সমন্বয়। অভিজ্ঞ শিক্ষক মণ্ডলীর তত্ত্বাবধানে আপনার সন্তানের দ্বীনি শিক্ষার পথ সুগম করুন।
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a href="#admission" className="btn-primary" style={{ backgroundColor: '#ffffff', color: '#14532d', fontWeight: 'bold' }}>
+            <a href="/admission" className="btn-primary" style={{ backgroundColor: '#ffffff', color: '#14532d', fontWeight: 'bold' }}>
               ভর্তি আবেদন করুন
             </a>
             <a href="tel:+8801521553003" className="btn-primary" style={{ backgroundColor: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)' }}>
