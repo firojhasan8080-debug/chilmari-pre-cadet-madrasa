@@ -1,101 +1,136 @@
-import React, { useEffect, useState } from 'react';
-import { supabase } from './supabaseClient';
-import Footer from './components/Footer';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { supabase } from '../config/supabaseClient';
+import { useAuth } from '../context/AuthContext';
 
 export default function Gallery() {
   const [images, setImages] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [loading, setLoading] = useState(true);
+  const { isSuperAdmin, isAdmin } = useAuth();
+
+  // নতুন ছবি ও ক্যাটাগরি যোগ করার ফর্ম স্টেট
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('Class Room');
+  const [imageUrl, setImageUrl] = useState('');
+
+  const categories = ['All', 'Class Room', 'Picnic', 'ওয়াজ-মাহফিল', 'সাংস্কৃতিক অনুষ্ঠান', 'অন্যান্য'];
 
   useEffect(() => {
-    fetchGalleryData();
+    fetchGalleryImages();
   }, []);
 
-  const fetchGalleryData = async () => {
+  const fetchGalleryImages = async () => {
     try {
-      // ক্যাটাগরি এবং ইমেজ ফেচ করা
-      const { data: imgData } = await supabase.from('gallery_images').select('*');
-      const { data: catData } = await supabase.from('gallery_categories').select('*');
-      
-      if (imgData) setImages(imgData);
-      if (catData) setCategories(catData);
+      const { data, error } = await supabase.from('gallery_images').select('*');
+      if (error) throw error;
+      if (data) setImages(data);
     } catch (err) {
-      console.error('Error fetching gallery:', err);
+      console.error('Error fetching gallery:', err.message);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleAddImage = async (e) => {
+    e.preventDefault();
+    const { error } = await supabase.from('gallery_images').insert([
+      { title, category, image_url: imageUrl }
+    ]);
+    if (!error) {
+      alert('গ্যালারিতে ছবি সফলভাবে যুক্ত হয়েছে!');
+      setTitle('');
+      setImageUrl('');
+      fetchGalleryImages();
+    } else {
+      alert('ত্রুটি: ' + error.message);
+    }
+  };
+
+  // ফিল্টার করা ছবিসমূহ
   const filteredImages = selectedCategory === 'All' 
     ? images 
     : images.filter(img => img.category === selectedCategory);
 
   return (
-    <div style={{ fontFamily: "'Hind Siliguri', 'Segoe UI', sans-serif", backgroundColor: '#f8fafc', color: '#0f172a', minHeight: '100vh', margin: 0, padding: 0 }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
-        .gallery-card { background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; transition: transform 0.3s; }
-        .gallery-card:hover { transform: translateY(-4px); }
-        .filter-btn { background: #e2e8f0; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .filter-btn.active, .filter-btn:hover { background: #16a34a; color: white; }
-      `}</style>
-
-      {/* হেডার */}
-      <div style={{ backgroundColor: '#14532d', color: '#ffffff', padding: '30px 20px', textAlign: 'center' }}>
-        <h1 style={{ margin: 0, fontSize: '24px', fontWeight: '800' }}>ফটো গ্যালারী</h1>
-        <p style={{ margin: '8px 0 0 0', fontSize: '14px', color: '#bbf7d0' }}>মাদ্রাসার বিভিন্ন কার্যক্রম ও আয়োজনের মুহূর্তসমূহ</p>
-        <div style={{ marginTop: '16px' }}>
-          <a href="/" style={{ color: '#ffffff', textDecoration: 'underline', fontSize: '14px' }}>← হোম পেজে ফিরে যান</a>
+    <div style={{ fontFamily: "'Hind Siliguri', sans-serif", backgroundColor: '#f8fafc', minHeight: '100vh', paddingBottom: '50px' }}>
+      {/* টপ হেডার */}
+      <div style={{ backgroundColor: '#14532d', color: 'white', padding: '20px', textAlign: 'center' }}>
+        <h1 style={{ margin: 0, fontSize: '1.8rem' }}>🖼️ ফটো গ্যালারি</h1>
+        <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#bbf7d0' }}>মাদ্রাসার বিভিন্ন কার্যক্রম ও আয়োজনের ছবিসমূহ</p>
+        <div style={{ marginTop: '15px' }}>
+          <Link to="/" style={{ color: '#ffffff', textDecoration: 'none', background: '#16a34a', padding: '6px 14px', borderRadius: '6px', fontSize: '14px' }}>← হোমপেজে ফিরে যান</Link>
         </div>
       </div>
 
-      <main style={{ maxWidth: '1200px', margin: '40px auto', padding: '0 16px' }}>
+      <div style={{ maxWidth: '1200px', margin: '30px auto', padding: '0 20px' }}>
         
-        {/* ক্যাটাগরি ফিল্টার বাটন */}
-        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '30px' }}>
-          <button 
-            className={`filter-btn ${selectedCategory === 'All' ? 'active' : ''}`}
-            onClick={() => setSelectedCategory('All')}
-          >
-            সকল ছবি
-          </button>
-          {categories.map((cat) => (
+        {/* Admin/Super Admin Form to Add Gallery Image */}
+        {(isSuperAdmin || isAdmin) && (
+          <div style={{ background: 'white', padding: '20px', borderRadius: '12px', marginBottom: '30px', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }}>
+            <h3 style={{ color: '#14532d', marginBottom: '15px' }}>➕ গ্যালারিতে নতুন ছবি যুক্ত করুন</h3>
+            <form onSubmit={handleAddImage} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '15px' }}>
+              <input type="text" placeholder="ছবির শিরোনাম / বিবরণ" value={title} onChange={e => setTitle(e.target.value)} required style={inputStyle} />
+              <select value={category} onChange={e => setCategory(e.target.value)} style={inputStyle}>
+                {categories.filter(c => c !== 'All').map(cat => <option key={cat} value={cat}>{cat}</option>)}
+              </select>
+              <input type="text" placeholder="ছবির লিংক (URL)" value={imageUrl} onChange={e => setImageUrl(e.target.value)} required style={inputStyle} />
+              <button type="submit" style={{ gridColumn: '1 / -1', background: '#16a34a', color: 'white', border: 'none', padding: '10px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>আপলোড করুন</button>
+            </form>
+          </div>
+        )}
+
+        {/* Category Filter Buttons */}
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '30px', justifyContent: 'center' }}>
+          {categories.map(cat => (
             <button 
-              key={cat.id}
-              className={`filter-btn ${selectedCategory === cat.name ? 'active' : ''}`}
-              onClick={() => setSelectedCategory(cat.name)}
+              key={cat} 
+              onClick={() => setSelectedCategory(cat)}
+              style={{
+                backgroundColor: selectedCategory === cat ? '#14532d' : 'white',
+                color: selectedCategory === cat ? 'white' : '#334155',
+                border: '1px solid #cbd5e1',
+                padding: '8px 16px',
+                borderRadius: '20px',
+                cursor: 'pointer',
+                fontWeight: '600',
+                fontSize: '14px',
+                transition: 'all 0.2s'
+              }}
             >
-              {cat.name}
+              {cat}
             </button>
           ))}
         </div>
 
+        {/* Gallery Grid */}
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>লোড হচ্ছে...</div>
+          <p style={{ textAlign: 'center' }}>লোড হচ্ছে...</p>
         ) : filteredImages.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>এই ক্যাটাগরিতে কোনো ছবি নেই।</div>
+          <p style={{ textAlign: 'center', color: '#64748b' }}>এই ক্যাটাগরিতে কোনো ছবি পাওয়া যায়নি।</p>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
-            {filteredImages.map((img) => (
-              <div key={img.id} className="gallery-card">
+            {filteredImages.map((img, idx) => (
+              <div key={idx} style={{ background: 'white', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', border: '1px solid #e2e8f0' }}>
                 <img 
                   src={img.image_url} 
-                  alt={img.title || 'Madrasa Gallery'} 
+                  alt={img.title} 
                   style={{ width: '100%', height: '200px', objectFit: 'cover' }}
                 />
-                <div style={{ padding: '16px' }}>
-                  <h3 style={{ margin: '0 0 6px 0', fontSize: '16px', color: '#0f172a' }}>{img.title || 'কার্যক্রম'}</h3>
-                  <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>{img.description || ''}</p>
+                <div style={{ padding: '15px' }}>
+                  <span style={{ backgroundColor: '#dcfce7', color: '#15803d', padding: '2px 8px', borderRadius: '10px', fontSize: '11px', fontWeight: 'bold' }}>
+                    {img.category}
+                  </span>
+                  <h4 style={{ margin: '8px 0 0 0', color: '#0f172a', fontSize: '16px' }}>{img.title}</h4>
                 </div>
               </div>
             ))}
           </div>
         )}
 
-      </main>
-
-      <Footer />
+      </div>
     </div>
   );
 }
+
+const inputStyle = { padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px' };
