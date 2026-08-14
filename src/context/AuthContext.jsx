@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '../supabaseClient';
+// সঠিক পাথ নিশ্চিত করা হয়েছে: src/context থেকে এক ধাপ উপরে গিয়ে config ফোল্ডারে ঢোকা হয়েছে
+import { supabase } from '../config/supabaseClient'; 
 
-const AuthContext = createContext({});
+const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -9,34 +10,33 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // বর্তমান সেশন চেক করা
-    const fetchSession = async () => {
-      setLoading(true);
+    // সেশন চেক করা
+    const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
+      setUser(session?.user || null);
       if (session?.user) {
-        await fetchProfile(session.user.id);
+        fetchProfile(session.user.id);
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
-    fetchSession();
+    getSession();
 
-    // অথেন্টিকেশন স্টেট পরিবর্তন হ্যান্ডেল করা
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setUser(session?.user ?? null);
+    // অথ স্টেট চেঞ্জ লিসেনার
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
       if (session?.user) {
-        await fetchProfile(session.user.id);
+        fetchProfile(session.user.id);
       } else {
         setProfile(null);
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  // প্রোফাইল ও রোল ডাটা ফেচ করা
   const fetchProfile = async (userId) => {
     try {
       const { data, error } = await supabase
@@ -45,24 +45,19 @@ export const AuthProvider = ({ children }) => {
         .eq('id', userId)
         .single();
       
-      if (!error && data) {
+      if (!error) {
         setProfile(data);
       }
-    } catch (err) {
-      console.error('Error fetching profile:', err);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // সাইন আউট ফাংশন
-  const signOut = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    setProfile(null);
-  };
-
   return (
-    <AuthContext.Provider value={{ user, profile, loading, signOut }}>
-      {children}
+    <AuthContext.Provider value={{ user, profile, loading }}>
+      {!loading && children}
     </AuthContext.Provider>
   );
 };
