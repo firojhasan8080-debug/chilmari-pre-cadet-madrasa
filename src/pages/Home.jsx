@@ -1,108 +1,227 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { BookOpen, Award, Users, Calendar, ArrowRight, CheckCircle2, Megaphone } from 'lucide-react';
+import React, { useState } from 'react';
+import Footer from '../components/Footer';
+import { useAuth } from '../context/AuthContext'; // AuthContext যুক্ত করা হলো
 
-const Home = () => {
+export default function Home() {
+  const [formData, setFormData] = useState({ studentName: '', phone: '', class: '' });
+  const [submitted, setSubmitted] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  const { profile } = useAuth(); // ইউজারের প্রোফাইল ডাটা কল করা হলো
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSubmitted(true);
+  };
+
+  const whatsappNumber = "8801918568313";
+
   return (
-    <div className="space-y-12 pb-12">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white py-16 md:py-24 px-4 sm:px-6 lg:px-8 shadow-inner">
-        <div className="max-w-7xl mx-auto text-center space-y-6">
-          <span className="inline-block px-4 py-1.5 bg-emerald-700/60 rounded-full text-emerald-200 text-sm font-medium backdrop-blur-sm border border-emerald-500/30">
-            বিসমিল্লাহির রহমানির রহিম
-          </span>
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
-            চিলমারী প্রি-ক্যাডেট মাদ্রাসা
-          </h1>
-          <p className="text-emerald-100 max-w-2xl mx-auto text-base md:text-xl font-light leading-relaxed">
-            দ্বীনি ও আধুনিক শিক্ষার এক অপূর্ব মেলবন্ধন। আপনার সন্তানকে সুশিক্ষা ও ইসলামী আদর্শে গড়ে তুলতে আমরা প্রতিশ্রুতিবদ্ধ।
-          </p>
-          <div className="flex flex-wrap justify-center gap-4 pt-4">
-            <Link
-              to="/contact"
-              className="px-6 py-3 bg-white text-emerald-900 font-bold rounded-lg hover:bg-emerald-50 transition-colors shadow-lg flex items-center gap-2"
-            >
-              ভর্তির আবেদন <ArrowRight className="w-5 h-5" />
-            </Link>
-            <Link
-              to="/about"
-              className="px-6 py-3 bg-emerald-700/50 hover:bg-emerald-700/80 text-white font-semibold rounded-lg transition-colors border border-emerald-500/40 backdrop-blur-sm"
-            >
-              আমাদের সম্পর্কে জানুন
-            </Link>
+    <div style={{ fontFamily: "'Hind Siliguri', 'Segoe UI', sans-serif", backgroundColor: '#f8fafc', color: '#0f172a', minHeight: '100vh', margin: 0, padding: 0, position: 'relative' }}>
+      {/* গ্লোবাল এবং স্টাইলিং রুলস */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+        * { box-sizing: border-box; scroll-behavior: smooth; }
+        .nav-link { color: #334155; text-decoration: none; font-weight: 600; transition: color 0.2s; }
+        .nav-link:hover { color: #15803d; }
+        .btn-primary { background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(22, 163, 74, 0.35); }
+        .card { background: #ffffff; border-radius: 18px; padding: 24px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01); border: 1px solid #e2e8f0; }
+        .badge { background: #dcfce7; color: #15803d; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; display: inline-block; }
+        
+        /* ভাসমান লাইভ চ্যাট বাটন */
+        .live-chat-btn {
+          position: fixed;
+          bottom: 25px;
+          right: 25px;
+          background-color: #25D366;
+          color: white;
+          border-radius: 50px;
+          padding: 12px 20px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          box-shadow: 0 10px 20px rgba(37, 211, 102, 0.4);
+          text-decoration: none;
+          font-weight: bold;
+          font-size: 14px;
+          z-index: 1000;
+          transition: all 0.3s ease;
+        }
+        .live-chat-btn:hover {
+          transform: scale(1.05);
+          box-shadow: 0 12px 25px rgba(37, 211, 102, 0.6);
+        }
+      `}</style>
+
+      {/* টপ কন্টাক্ট বার */}
+      <div style={{ backgroundColor: '#14532d', color: '#f0fdf4', padding: '8px 20px', fontSize: '13px' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+          <div>📍 চিলমারী, কুড়িগ্রাম, বাংলাদেশ</div>
+          <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+            <span>📞 যোগাযোগ: <a href="tel:+8801521553003" style={{ color: '#ffffff', fontWeight: 'bold', textDecoration: 'none' }}>+880 1521-553003</a></span>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Quick Notice Marquee / Banner */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center gap-3 text-amber-900 shadow-sm">
-          <Megaphone className="w-6 h-6 text-amber-600 shrink-0" />
-          <div className="text-sm md:text-base font-medium">
-            <span className="font-bold text-amber-700">জরুরী নোটিশ:</span> ২০২৬ শিক্ষাবর্ষে নতুন ভর্তি চলছে! আসন সংখ্যা সীমিত। অতি শীঘ্রই অফিসে যোগাযোগ করুন।
-          </div>
-        </div>
-      </section>
-
-      {/* Key Features */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10">
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-800">আমাদের বিশেষত্ব</h2>
-          <p className="text-slate-600 text-sm mt-1">কেন আপনার সন্তানকে আমাদের মাদ্রাসায় পাঠাবেন?</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-            <div className="w-12 h-12 bg-emerald-100 text-emerald-700 rounded-xl flex items-center justify-center mb-4">
-              <BookOpen className="w-6 h-6" />
+      {/* নেভিগেশন বার */}
+      <nav style={{ backgroundColor: '#ffffff', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '14px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: 'linear-gradient(135deg, #16a34a, #15803d)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '22px', boxShadow: '0 4px 10px rgba(22, 163, 74, 0.3)' }}>
+              চ
             </div>
-            <h3 className="text-lg font-bold text-slate-800 mb-2">সমালন্বিত পাঠ্যক্রম</h3>
-            <p className="text-slate-600 text-sm leading-relaxed">
-              নূরাণী, হিফজ এবং সাধারণ বোর্ডের পাঠ্যক্রমের সমন্বয়ে আধুনিক শিক্ষাদান ব্যবস্থা।
-            </p>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-            <div className="w-12 h-12 bg-teal-100 text-teal-700 rounded-xl flex items-center justify-center mb-4">
-              <Users className="w-6 h-6" />
+            <div>
+              <h1 style={{ fontSize: '18px', fontWeight: '800', color: '#14532d', margin: 0, lineHeight: 1.2 }}>চিলমারী প্রি ক্যাডেট মাদ্রাসা</h1>
+              <p style={{ fontSize: '11px', color: '#64748b', margin: 0, fontStyle: 'italic' }}>দ্বীন ও আধুনিক শিক্ষার অপূর্ব মেলবন্ধন</p>
             </div>
-            <h3 className="text-lg font-bold text-slate-800 mb-2">অভিজ্ঞ শিক্ষকবৃন্দ</h3>
-            <p className="text-slate-600 text-sm leading-relaxed">
-              অভিজ্ঞ ও প্রশিক্ষণপ্রাপ্ত শিক্ষক মণ্ডলী দ্বারা সার্বক্ষণিক যত্ন ও নিবিড় তদারকি।
-            </p>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-            <div className="w-12 h-12 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center mb-4">
-              <Award className="w-6 h-6" />
-            </div>
-            <h3 className="text-lg font-bold text-slate-800 mb-2">নৈতিক ও আধুনিক পরিবেশ</h3>
-            <p className="text-slate-600 text-sm leading-relaxed">
-              কম্পিউটার শিক্ষা, ধর্মীয় অনুশাসন এবং সুন্দর সুশৃঙ্খল ক্যাডেট পরিবেশ।
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Admission Callout */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-emerald-900 rounded-2xl p-8 md:p-12 text-white flex flex-col md:flex-row justify-between items-center gap-6 shadow-xl">
-          <div className="space-y-3">
-            <h2 className="text-2xl md:text-3xl font-bold">ভর্তির সুযোগ নিন</h2>
-            <p className="text-emerald-200 text-sm md:text-base max-w-xl">
-              প্লে থেকে ৮ম শ্রেণী পর্যন্ত ভর্তি চলছে। সেরা ইসলামী ও সাধারণ শিক্ষার নিশ্চয়তায় আজই যোগাযোগ করুন।
-            </p>
-          </div>
-          <Link
-            to="/contact"
-            className="px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl transition-colors shrink-0 shadow-md"
+          {/* মোবাইল মেনু টগল বাটন */}
+          <button 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
+            style={{ background: '#f1f5f9', border: 'none', padding: '8px 12px', borderRadius: '8px', fontSize: '20px', cursor: 'pointer', color: '#1e293b' }}
           >
-            যোগাযোগ করুন
-          </Link>
+            {mobileMenuOpen ? '✕' : '☰'}
+          </button>
         </div>
-      </section>
+
+        {/* মোবাইল ড্রপডাউন মেনু */}
+        {mobileMenuOpen && (
+          <div style={{ backgroundColor: '#ffffff', borderTop: '1px solid #f1f5f9', padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '14px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}>
+            <a href="#home" className="nav-link" onClick={() => setMobileMenuOpen(false)}>হোম</a>
+            <a href="#about" className="nav-link" onClick={() => setMobileMenuOpen(false)}>প্রধান শিক্ষকের বাণী</a>
+            <a href="#notice" className="nav-link" onClick={() => setMobileMenuOpen(false)}>নোটিশ বোর্ড</a>
+            <a href="#contact" className="nav-link" onClick={() => setMobileMenuOpen(false)}>যোগাযোগ</a>
+            
+            <a href="/teachers" className="nav-link" onClick={() => setMobileMenuOpen(false)}>শিক্ষক বিন্দু</a>
+            <a href="/students" className="nav-link" onClick={() => setMobileMenuOpen(false)}>ছাএ ছাএী</a>
+            <a href="/gallery" className="nav-link" onClick={() => setMobileMenuOpen(false)}>গ্যালারী</a>
+            
+            {/* ডাইনামিক এডমিন প্যানেল লিংকস */}
+            {(profile?.role === 'admin' || profile?.role === 'super_admin') && (
+              <a href="/admin" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Admin</a>
+            )}
+            
+            {(profile?.role === 'teacher' || profile?.role === 'admin' || profile?.role === 'super_admin') && (
+              <a href="/teacher-permission" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Teacher Permission Dashboard</a>
+            )}
+            
+            {profile?.role === 'super_admin' && (
+              <a href="/super-admin" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Super Admin</a>
+            )}
+            
+            <a href="/admission" className="btn-primary" style={{ textAlign: 'center' }} onClick={() => setMobileMenuOpen(false)}>অনলাইন ভর্তি</a>
+          </div>
+        )}
+      </nav>
+
+      {/* হিরো সেকশন */}
+      <header id="home" style={{ background: 'linear-gradient(135deg, #064e3b 0%, #14532d 50%, #166534 100%)', color: 'white', padding: '50px 20px 70px 20px', textAlign: 'center', position: 'relative' }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <span className="badge" style={{ backgroundColor: 'rgba(255,255,255,0.2)', color: '#ffffff', marginBottom: '16px' }}>
+            🎓 নতুন সেশনে ভর্তি চলছে
+          </span>
+          <h2 style={{ fontSize: '2.1rem', fontWeight: '800', margin: '16px 0', lineHeight: '1.3' }}>
+            সুশিক্ষা ও সুন্নাত ভিত্তিক আদর্শ জীবন গড়ার বিশ্বস্ত প্রতিষ্ঠান
+          </h2>
+          <p style={{ fontSize: '15px', color: '#ecfdf5', lineHeight: '1.7', marginBottom: '28px' }}>
+            আমরা দিচ্ছি আধুনিক ক্বওমী ও জেনারেল শিক্ষা ব্যবস্থার এক অনন্য সমন্বয়। অভিজ্ঞ শিক্ষক মণ্ডলীর তত্ত্বাবধানে আপনার সন্তানের দ্বীনি শিক্ষার পথ সুগম করুন।
+          </p>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <a href="/admission" className="btn-primary" style={{ backgroundColor: '#ffffff', color: '#14532d', fontWeight: 'bold' }}>
+              ভর্তি আবেদন করুন
+            </a>
+            <a href="tel:+8801521553003" className="btn-primary" style={{ backgroundColor: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)' }}>
+              📞 সরাসরি কল দিন
+            </a>
+          </div>
+        </div>
+      </header>
+
+      {/* মূল কন্টেন্ট */}
+      <main style={{ maxWidth: '1200px', margin: '-30px auto 40px auto', padding: '0 16px', position: 'relative', zIndex: 10 }}>
+        
+        {/* প্রধান শিক্ষকের তথ্য ও বাণী সেকশন */}
+        <section id="about" style={{ marginBottom: '32px' }}>
+          <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
+            <div style={{ textAlign: 'center', flexShrink: 0 }}>
+              <div style={{ position: 'relative', display: 'inline-block' }}>
+                <img 
+                  src="https://i.postimg.cc/xd8py0DW/1786523361131.jpg" 
+                  alt="Arif Ashab Khorshed" 
+                  style={{ width: '130px', height: '130px', borderRadius: '50%', objectFit: 'cover', border: '4px solid #16a34a', boxShadow: '0 6px 16px rgba(0,0,0,0.15)' }}
+                />
+              </div>
+              <h3 style={{ margin: '12px 0 2px 0', fontSize: '20px', color: '#0f172a', fontWeight: '700' }}>Arif Ashab Khorshed</h3>
+              <span className="badge">প্রধান শিক্ষক</span>
+            </div>
+            
+            <div style={{ textAlign: 'left', width: '100%' }}>
+              <h3 style={{ fontSize: '20px', color: '#166534', marginTop: 0, marginBottom: '12px', borderBottom: '2px solid #f1f5f9', paddingBottom: '8px' }}>
+                প্রধান শিক্ষকের বার্তা
+              </h3>
+              <p style={{ lineHeight: '1.8', color: '#334155', margin: 0, fontSize: '15px' }}>
+                "বিসমিল্লাহির রহমানির রহিম। চিলমারী প্রি ক্যাডেট মাদ্রাসায় আপনাকে জানাই আন্তরিক শুভেচ্ছা। আমাদের সুনির্দিষ্ট লক্ষ্য হলো কোমলমতি শিশুদের ধর্মীয় মূল্যবোধ, উত্তম চরিত্র এবং আধুনিক শিক্ষার মাধ্যমে এক আদর্শ সুনাগরিক হিসেবে গড়ে তোলা। অভিজ্ঞ শিক্ষক মণ্ডলীর পরম মমতায় আমরা শিক্ষার্থীদের মেধা ও সুপ্ত প্রতিভার বিকাশে সততার সাথে দায়িত্ব পালন করে যাচ্ছি।"
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* নোটিশ ও বৈশিষ্ট্য */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginBottom: '32px' }}>
+          
+          {/* নোটিশ বোর্ড */}
+          <div id="notice" className="card">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', borderBottom: '2px solid #f1f5f9', paddingBottom: '10px' }}>
+              <h3 style={{ margin: 0, fontSize: '18px', color: '#166534', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                📌 নোটিশ বোর্ড
+              </h3>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ padding: '12px', borderRadius: '10px', background: '#f8fafc', borderLeft: '4px solid #16a34a' }}>
+                <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold' }}>১২ আগস্ট ২০২৬</span>
+                <p style={{ margin: '4px 0 0 0', fontSize: '14px', fontWeight: '600' }}>২০২৬-২৭ শিক্ষাবর্ষের নতুন ভর্তি ফরম অনলাইন ও অফিসে পাওয়া যাচ্ছে।</p>
+              </div>
+              <div style={{ padding: '12px', borderRadius: '10px', background: '#f8fafc', borderLeft: '4px solid #eab308' }}>
+                <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold' }}>১৫ আগস্ট ২০২৬</span>
+                <p style={{ margin: '4px 0 0 0', fontSize: '14px', fontWeight: '600' }}>অভিভাবক সমাবেশ ও বার্ষিক মূল্যায়নী সভা সংক্রান্ত নোটিশ।</p>
+              </div>
+            </div>
+          </div>
+
+          {/* বৈশিষ্ট্যসমূহ */}
+          <div className="card">
+            <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', color: '#166534', borderBottom: '2px solid #f1f5f9', paddingBottom: '10px' }}>
+              🌟 আমাদের বিশেষত্ব
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {['অভিজ্ঞ ও দ্বীনদার শিক্ষক মণ্ডলী', 'হিফজ ও বিশুদ্ধ ক্বিরাআত প্রশিক্ষণ', 'কম্পিউটার ও তথ্যপ্রযুক্তি শিক্ষা', 'নিরাপদ ও সিসিটিভি নিয়ন্ত্রিত ক্যাম্পাস', 'সুপরিসর ক্লাসরুম ও মনোরম পরিবেশ'].map((item, idx) => (
+                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', color: '#334155' }}>
+                  <span style={{ color: '#16a34a', fontWeight: 'bold' }}>✓</span>
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+
+      {/* ভাসমান লাইভ চ্যাট বাটন */}
+      <a 
+        href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('হ্যালো ফিরোজ ভাই, ওয়েবসাইট/অ্যাপ বা লাইভ সাপোর্ট সম্পর্কিত সাহায্য প্রয়োজন।')}`} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="live-chat-btn"
+      >
+        <span>💬</span>
+        <span>লাইভ চ্যাট</span>
+      </a>
+
+      {/* ফুটার */}
+      <Footer />
     </div>
   );
-};
-
-export default Home;
+}
