@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-// সঠিক পাথ নিশ্চিত করা হয়েছে: src/context থেকে এক ধাপ উপরে গিয়ে config ফোল্ডারে ঢোকা হয়েছে
 import { supabase } from '../config/supabaseClient'; 
 
 const AuthContext = createContext();
@@ -10,12 +9,11 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // সেশন চেক করা
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user || null);
       if (session?.user) {
-        fetchProfile(session.user.id);
+        await fetchProfile(session.user.id);
       } else {
         setLoading(false);
       }
@@ -23,11 +21,10 @@ export const AuthProvider = ({ children }) => {
 
     getSession();
 
-    // অথ স্টেট চেঞ্জ লিসেনার
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setUser(session?.user || null);
       if (session?.user) {
-        fetchProfile(session.user.id);
+        await fetchProfile(session.user.id);
       } else {
         setProfile(null);
         setLoading(false);
@@ -45,7 +42,7 @@ export const AuthProvider = ({ children }) => {
         .eq('id', userId)
         .single();
       
-      if (!error) {
+      if (!error && data) {
         setProfile(data);
       }
     } catch (error) {
@@ -55,8 +52,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Helper flags for roles (supporting both uppercase and lowercase role strings from DB)
+  const userRole = profile?.role?.toLowerCase() || '';
+  const isSuperAdmin = userRole === 'super_admin' || userRole === 'superadmin';
+  const isAdmin = userRole === 'admin' || isSuperAdmin;
+  const isTeacher = userRole === 'teacher' || isAdmin;
+
   return (
-    <AuthContext.Provider value={{ user, profile, loading }}>
+    <AuthContext.Provider value={{ user, profile, loading, isSuperAdmin, isAdmin, isTeacher }}>
       {!loading && children}
     </AuthContext.Provider>
   );
