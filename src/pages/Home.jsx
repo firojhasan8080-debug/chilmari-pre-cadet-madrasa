@@ -80,7 +80,7 @@ export default function Home() {
           </button>
         </div>
 
-        {/* মোবাইল ড্রপডাউন মেনু (React Router Link দিয়ে আপডেট করা) */}
+        {/* মোবাইল ড্রপডাউন মেনু */}
         {mobileMenuOpen && (
           <div style={{ backgroundColor: '#ffffff', borderTop: '1px solid #f1f5f9', padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '14px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}>
             <Link to="/" className="nav-link" onClick={() => setMobileMenuOpen(false)}>হোম</Link>
@@ -106,6 +106,9 @@ export default function Home() {
             )}
             
             <Link to="/admission" className="btn-primary" style={{ textAlign: 'center' }} onClick={() => setMobileMenuOpen(false)}>অনলাইন ভর্তি</Link>
+            
+            {/* লগইন অপশন যুক্ত করা হলো */}
+            <Link to="/login" className="nav-link" style={{ textAlign: 'center', backgroundColor: '#f1f5f9', padding: '10px', borderRadius: '8px', color: '#1e293b' }} onClick={() => setMobileMenuOpen(false)}>🔑 লগইন করুন</Link>
           </div>
         )}
       </nav>
