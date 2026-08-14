@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../config/supabaseClient';
+import React, { useEffect, useState } from 'react';
+import { supabase } from './supabaseClient';
+import Footer from './components/Footer';
 
 export default function Teachers() {
   const [teachers, setTeachers] = useState([]);
@@ -11,66 +12,65 @@ export default function Teachers() {
 
   const fetchTeachers = async () => {
     try {
-      const { data, error } = await supabase.from('teachers').select('*').order('id', { ascending: true });
-      if (error) throw error;
-      setTeachers(data || []);
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('role', 'teacher');
+      
+      if (!error && data) {
+        setTeachers(data);
+      }
     } catch (err) {
-      console.error("Error fetching teachers:", err.message);
+      console.error('Error fetching teachers:', err);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.title}>👨‍🏫 আমাদের সম্মানিত শিক্ষক-শিক্ষিকাবৃন্দ</h1>
-      <p style={styles.subtitle}>চিলমারী প্রি ক্যাডেট মাদ্রাসার অভিজ্ঞ ও নিবেদিতপ্রাণ শিক্ষকমণ্ডলী</p>
+    <div style={{ fontFamily: "'Hind Siliguri', 'Segoe UI', sans-serif", backgroundColor: '#f8fafc', color: '#0f172a', minHeight: '100vh', margin: 0, padding: 0 }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+        .teacher-card { background: #ffffff; border-radius: 16px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; text-align: center; transition: transform 0.3s ease; }
+        .teacher-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        .badge { background: #dcfce7; color: #15803d; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; display: inline-block; }
+      `}</style>
 
-      {loading ? (
-        <p style={{ textAlign: 'center', marginTop: '30px' }}>তথ্য লোড হচ্ছে...</p>
-      ) : teachers.length === 0 ? (
-        <div style={styles.emptyCard}>
-          <p>বর্তমানে কোনো শিক্ষকের তথ্য যুক্ত করা হয়নি। শীঘ্রই ডাটা আপডেট করা হবে।</p>
+      {/* হেডার বার */}
+      <div style={{ backgroundColor: '#14532d', color: '#ffffff', padding: '30px 20px', textAlign: 'center' }}>
+        <h1 style={{ margin: 0, fontSize: '24px', fontWeight: '800' }}>শিক্ষকবৃন্দ</h1>
+        <p style={{ margin: '8px 0 0 0', fontSize: '14px', color: '#bbf7d0' }}>চিলমারী প্রি ক্যাডেট মাদ্রাসার সুযোগ্য ও অভিজ্ঞ শিক্ষক মণ্ডলী</p>
+        <div style={{ marginTop: '16px' }}>
+          <a href="/" style={{ color: '#ffffff', textDecoration: 'underline', fontSize: '14px' }}>← হোম পেজে ফিরে যান</a>
         </div>
-      ) : (
-        <div style={styles.grid}>
-          {teachers.map((t) => (
-            <div key={t.id} style={styles.card}>
-              <div style={styles.imgContainer}>
+      </div>
+
+      {/* শিক্ষক তালিকা সেকশন */}
+      <main style={{ maxWidth: '1200px', margin: '40px auto', padding: '0 16px' }}>
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '40px', fontSize: '16px', color: '#64748b' }}>লোড হচ্ছে...</div>
+        ) : teachers.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '40px', fontSize: '16px', color: '#64748b' }}>কোনো শিক্ষক পাওয়া যায়নি।</div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
+            {teachers.map((teacher) => (
+              <div key={teacher.id} className="teacher-card">
                 <img 
-                  src={t.photo_url || 'https://i.ibb.co/sample/avatar.jpg'} 
-                  alt={t.name} 
-                  style={styles.image} 
+                  src={teacher.avatar || 'https://i.postimg.cc/xd8py0DW/1786523361131.jpg'} 
+                  alt={teacher.name} 
+                  style={{ width: '110px', height: '110px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #16a34a', margin: '0 auto 16px auto' }}
                 />
+                <h3 style={{ margin: '0 0 4px 0', fontSize: '18px', color: '#0f172a' }}>{teacher.name}</h3>
+                <span className="badge" style={{ marginBottom: '12px' }}>শিক্ষক</span>
+                <p style={{ margin: '4px 0', fontSize: '14px', color: '#334155' }}>📞 মোবাইল: {teacher.phone || 'সংরক্ষিত নয়'}</p>
+                <p style={{ margin: '4px 0', fontSize: '13px', color: '#64748b' }}>📧 ইমেইল: {teacher.email || 'প্রযোজ্য নয়'}</p>
               </div>
-              <h3 style={styles.name}>{t.name}</h3>
-              <span style={styles.badge}>{t.designation}</span>
-              <p style={styles.info}><strong>বিষয়:</strong> {t.subject || 'N/A'}</p>
-              <p style={styles.info}><strong>যোগ্যতা:</strong> {t.qualification || 'N/A'}</p>
-              {t.mobile && (
-                <a href={`tel:${t.mobile}`} style={styles.callBtn}>
-                  📞 {t.mobile}
-                </a>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </main>
+
+      <Footer />
     </div>
   );
 }
-
-const styles = {
-  container: { maxWidth: '1100px', margin: '0 auto', padding: '30px 15px', minHeight: '80vh' },
-  title: { textAlignment: 'center', textAlign: 'center', color: '#0f392b', fontSize: '1.8rem', fontWeight: 'bold' },
-  subtitle: { textAlign: 'center', color: '#64748b', marginBottom: '30px', fontSize: '0.95rem' },
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px' },
-  card: { backgroundColor: '#fff', borderRadius: '12px', padding: '20px', textAlign: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.06)', border: '1px solid #e2e8f0' },
-  imgContainer: { width: '120px', height: '140px', margin: '0 auto 15px', borderRadius: '8px', overflow: 'hidden', border: '3px solid #0f392b' },
-  image: { width: '100%', height: '100%', objectFit: 'cover' },
-  name: { fontSize: '1.1rem', color: '#1e293b', fontWeight: 'bold', marginBottom: '5px' },
-  badge: { display: 'inline-block', backgroundColor: '#e6f4ea', color: '#0f392b', padding: '4px 12px', borderRadius: '15px', fontSize: '0.8rem', fontWeight: 'bold', marginBottom: '12px' },
-  info: { fontSize: '0.88rem', color: '#475569', margin: '4px 0' },
-  callBtn: { display: 'inline-block', marginTop: '12px', backgroundColor: '#0f392b', color: '#fff', padding: '6px 14px', borderRadius: '6px', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 'bold' },
-  emptyCard: { textAlign: 'center', padding: '40px', backgroundColor: '#fff', borderRadius: '8px', border: '1px dashed #ccc', color: '#666' }
-};
