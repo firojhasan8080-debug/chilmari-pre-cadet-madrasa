@@ -1,111 +1,101 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../config/supabaseClient';
+import React, { useEffect, useState } from 'react';
+import { supabase } from './supabaseClient';
+import Footer from './components/Footer';
 
 export default function Gallery() {
-  const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
   const [images, setImages] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const [loading, setLoading] = useState(true);
-  const [activeImage, setActiveImage] = useState(null); // Lightbox preview
 
   useEffect(() => {
-    fetchCategories();
+    fetchGalleryData();
   }, []);
 
-  useEffect(() => {
-    if (selectedCategory) {
-      fetchImages(selectedCategory.id);
-    }
-  }, [selectedCategory]);
-
-  const fetchCategories = async () => {
+  const fetchGalleryData = async () => {
     try {
-      const { data, error } = await supabase.from('gallery_categories').select('*').order('id', { ascending: true });
-      if (error) throw error;
-      setCategories(data || []);
-      if (data && data.length > 0) {
-        setSelectedCategory(data[0]); // Default First Category
-      }
+      // ক্যাটাগরি এবং ইমেজ ফেচ করা
+      const { data: imgData } = await supabase.from('gallery_images').select('*');
+      const { data: catData } = await supabase.from('gallery_categories').select('*');
+      
+      if (imgData) setImages(imgData);
+      if (catData) setCategories(catData);
     } catch (err) {
-      console.error("Error fetching gallery categories:", err.message);
+      console.error('Error fetching gallery:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchImages = async (categoryId) => {
-    try {
-      const { data, error } = await supabase.from('gallery_images').select('*').eq('category_id', categoryId);
-      if (error) throw error;
-      setImages(data || []);
-    } catch (err) {
-      console.error("Error fetching images:", err.message);
-    }
-  };
+  const filteredImages = selectedCategory === 'All' 
+    ? images 
+    : images.filter(img => img.category === selectedCategory);
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.title}>🖼️ মাদ্রাসার গ্যালারি</h1>
-      <p style={styles.subtitle}>আমাদের মাদ্রাসার বিভিন্ন অনুষ্ঠান, ক্লাসরুম ও স্মৃতিচিহ্নসমূহ</p>
+    <div style={{ fontFamily: "'Hind Siliguri', 'Segoe UI', sans-serif", backgroundColor: '#f8fafc', color: '#0f172a', minHeight: '100vh', margin: 0, padding: 0 }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+        .gallery-card { background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; transition: transform 0.3s; }
+        .gallery-card:hover { transform: translateY(-4px); }
+        .filter-btn { background: #e2e8f0; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .filter-btn.active, .filter-btn:hover { background: #16a34a; color: white; }
+      `}</style>
 
-      {/* Category Tabs / Folders */}
-      <div style={styles.categoryContainer}>
-        {categories.map((cat) => (
-          <button
-            key={cat.id}
-            onClick={() => setSelectedCategory(cat)}
-            style={selectedCategory?.id === cat.id ? styles.activeCategoryBtn : styles.categoryBtn}
-          >
-            📁 {cat.name}
-          </button>
-        ))}
+      {/* হেডার */}
+      <div style={{ backgroundColor: '#14532d', color: '#ffffff', padding: '30px 20px', textAlign: 'center' }}>
+        <h1 style={{ margin: 0, fontSize: '24px', fontWeight: '800' }}>ফটো গ্যালারী</h1>
+        <p style={{ margin: '8px 0 0 0', fontSize: '14px', color: '#bbf7d0' }}>মাদ্রাসার বিভিন্ন কার্যক্রম ও আয়োজনের মুহূর্তসমূহ</p>
+        <div style={{ marginTop: '16px' }}>
+          <a href="/" style={{ color: '#ffffff', textDecoration: 'underline', fontSize: '14px' }}>← হোম পেজে ফিরে যান</a>
+        </div>
       </div>
 
-      {/* Image Grid */}
-      {loading ? (
-        <p style={{ textAlign: 'center', margin: '30px 0' }}>গ্যালারি লোড হচ্ছে...</p>
-      ) : images.length === 0 ? (
-        <div style={styles.emptyCard}>
-          <p>এই ফোল্ডারে এখনো কোনো ছবি যোগ করা হয়নি।</p>
-        </div>
-      ) : (
-        <div style={styles.grid}>
-          {images.map((img) => (
-            <div key={img.id} style={styles.imageCard} onClick={() => setActiveImage(img.image_url)}>
-              <img src={img.image_url} alt={img.caption || 'Gallery Image'} style={styles.galleryImg} />
-              {img.caption && <p style={styles.caption}>{img.caption}</p>}
-            </div>
+      <main style={{ maxWidth: '1200px', margin: '40px auto', padding: '0 16px' }}>
+        
+        {/* ক্যাটাগরি ফিল্টার বাটন */}
+        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '30px' }}>
+          <button 
+            className={`filter-btn ${selectedCategory === 'All' ? 'active' : ''}`}
+            onClick={() => setSelectedCategory('All')}
+          >
+            সকল ছবি
+          </button>
+          {categories.map((cat) => (
+            <button 
+              key={cat.id}
+              className={`filter-btn ${selectedCategory === cat.name ? 'active' : ''}`}
+              onClick={() => setSelectedCategory(cat.name)}
+            >
+              {cat.name}
+            </button>
           ))}
         </div>
-      )}
 
-      {/* Fullscreen Image Preview / Lightbox Modal */}
-      {activeImage && (
-        <div style={styles.modalOverlay} onClick={() => setActiveImage(null)}>
-          <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <button style={styles.closeBtn} onClick={() => setActiveImage(null)}>✕</button>
-            <img src={activeImage} alt="Preview" style={styles.modalImg} />
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>লোড হচ্ছে...</div>
+        ) : filteredImages.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>এই ক্যাটাগরিতে কোনো ছবি নেই।</div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+            {filteredImages.map((img) => (
+              <div key={img.id} className="gallery-card">
+                <img 
+                  src={img.image_url} 
+                  alt={img.title || 'Madrasa Gallery'} 
+                  style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+                />
+                <div style={{ padding: '16px' }}>
+                  <h3 style={{ margin: '0 0 6px 0', fontSize: '16px', color: '#0f172a' }}>{img.title || 'কার্যক্রম'}</h3>
+                  <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>{img.description || ''}</p>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
-      )}
+        )}
+
+      </main>
+
+      <Footer />
     </div>
   );
 }
-
-const styles = {
-  container: { maxWidth: '1100px', margin: '0 auto', padding: '30px 15px', minHeight: '80vh' },
-  title: { textAlign: 'center', color: '#0f392b', fontSize: '1.8rem', fontWeight: 'bold' },
-  subtitle: { textAlign: 'center', color: '#64748b', marginBottom: '25px', fontSize: '0.95rem' },
-  categoryContainer: { display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '10px', marginBottom: '25px' },
-  categoryBtn: { backgroundColor: '#e2e8f0', color: '#334155', border: 'none', padding: '8px 16px', borderRadius: '20px', cursor: 'pointer', whiteSpace: 'nowrap', fontWeight: '500', fontSize: '0.9rem' },
-  activeCategoryBtn: { backgroundColor: '#0f392b', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '20px', cursor: 'pointer', whiteSpace: 'nowrap', fontWeight: 'bold', fontSize: '0.9rem' },
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '15px' },
-  imageCard: { backgroundColor: '#fff', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 10px rgba(0,0,0,0.06)', cursor: 'pointer', border: '1px solid #e2e8f0' },
-  galleryImg: { width: '100%', height: '180px', objectFit: 'cover', display: 'block' },
-  caption: { padding: '8px 12px', fontSize: '0.82rem', color: '#475569', textAlign: 'center' },
-  emptyCard: { textAlign: 'center', padding: '40px', backgroundColor: '#fff', borderRadius: '8px', border: '1px dashed #ccc', color: '#666' },
-  modalOverlay: { position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 3000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' },
-  modalContent: { position: 'relative', maxWidth: '900px', maxHeight: '90vh' },
-  modalImg: { width: '100%', maxHeight: '85vh', objectFit: 'contain', borderRadius: '8px' },
-  closeBtn: { position: 'absolute', top: '-15px', right: '-15px', backgroundColor: '#ef4444', color: '#fff', border: 'none', borderRadius: '50%', width: '35px', height: '35px', fontSize: '1.2rem', cursor: 'pointer', fontWeight: 'bold' }
-};
